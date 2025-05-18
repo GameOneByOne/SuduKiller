@@ -19,5 +19,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.SudoMain, name="SudoMain"),
+    path("", views.sudo_solve, name="SudoSolve"),
+    path("occur/", views.sudo_occur, name="SudoOccur"),
+    path("complete/", views.sudo_complete, name="SudoComplete"),
 ]

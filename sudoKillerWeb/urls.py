@@ -20,5 +20,5 @@ import sudo.urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("sudo", include(sudo.urls)),
+    path("sudo/", include(sudo.urls)),
 ]

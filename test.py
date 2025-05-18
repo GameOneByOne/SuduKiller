@@ -7,18 +7,18 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
 django.setup()
 
-# 导入模型
 from sudo.models import Sudoku
 
 # 配置数独的生成
 result = [[-1] * 9 for _ in range(9)]
-selected_data = list()
+selected_data = [[list(range(1, 10)) for _ in range(9)] for _ in range(9)]
+for row in range(9) :
+    for col in range(9) :
+        random.shuffle(selected_data[row][col])
+try_solve_list = list()
+solution_num = 0
 
-def show() :
-    for row in range(9) :
-        print(result[row])
-        
-def show_str() :
+def convert_to_str() :
     sudo_str = ""
     for row in range(9) :
         for col in range(9) :
@@ -29,29 +29,59 @@ def valid(row : int, col : int, data : int) :
     # 查看一个块里面是否有重复
     for row_index in range((row // 3) * 3, ((row // 3) + 1) * 3) :
         for col_index in range((col // 3) * 3, ((col // 3) + 1) * 3) :
-            if result[row_index][col_index] == -1 :
-                break
+            if result[row_index][col_index] <= 0 :
+                continue
             elif result[row_index][col_index] == data :
                 return False
 
     # 查看一行里面是否有重复
     for col_index in range(9) :
-        if result[row][col_index] == -1 :
-            break
+        if result[row][col_index] <= 0 :
+            continue
         elif result[row][col_index] == data :
             return False
 
     # 查看一列里面是否有重复
     for row_index in range(9) :
-        if result[row_index][col] == -1 :
-            break
+        if result[row_index][col] <= 0 :
+            continue
         elif result[row_index][col] == data :
             return False
 
     return True
 
-def generate(row : int, col : int) :
-    # 判断终止条件
+def empty_some_cell(empty_cell : int) :
+    while empty_cell > 0 :
+        row = random.randint(0, 8)
+        col = random.randint(0, 8)
+        if result[row][col] != 0 :
+            result[row][col] = 0
+            empty_cell -= 1
+            try_solve_list.append([row, col])
+    return
+
+def calc_try_solve_list() :
+    for index in range(len(try_solve_list)) :
+        can_fill_nums = list()
+        for num in range(1, 10) :
+            if valid(try_solve_list[index][0], try_solve_list[index][1], num) :
+                can_fill_nums.append(num)
+        try_solve_list[index].append(can_fill_nums)
+
+def calc_all_solution(index : int) :
+    global solution_num
+    if index >= len(try_solve_list) :
+        solution_num += 1
+        return
+
+    for num in try_solve_list[index][2] :
+        if not valid(try_solve_list[index][0], try_solve_list[index][1], num) :
+            continue
+        result[try_solve_list[index][0]][try_solve_list[index][1]] = num
+        calc_all_solution(index + 1)
+        result[try_solve_list[index][0]][try_solve_list[index][1]] = 0
+
+def generate(row : int, col : int) : # 判断终止条件
     if row > 8 or col > 8 :
         return True
 
@@ -68,29 +98,30 @@ def generate(row : int, col : int) :
 
     return False
 
-def init() :
-    global selected_data
-
-    print("{} [Init] Begin.".format(time.ctime()))
-    # 初始化每个位置的数字选取顺序，并随机打乱
-    selected_data = [[list(range(1, 10)) for _ in range(9)] for _ in range(9)]
-    for row in range(9) :
-        for col in range(9) :
-            random.shuffle(selected_data[row][col])
-    print("{} [Init] Finished.".format(time.ctime()))
-    return
-
-init()
+print("{} [Generate] Begin.".format(time.ctime()))  
 generate(0, 0)
-sudo_str = show_str()
-print(sudo_str)
+print("{} [Generate] Finished.".format(time.ctime()))
+solution = convert_to_str()
+result_bak = list(result)
+while True :
+    solution_num = 0
+    try_solve_list = list()
+    result = list(result_bak)
+
+    empty_some_cell(2)
+    calc_try_solve_list()
+    calc_all_solution(0)
+    if (solution_num == 1) :
+        print("{} [Empty And Solve] Valid Succeed.".format(time.ctime()))
+        break
+    print("{} [Empty And Solve] Valid Failed.".format(time.ctime()))
+
+puzzle = convert_to_str()
+print(puzzle)
 # 创建数独记录
 sudoku = Sudoku.objects.create(
-    puzzle=sudo_str,
+    puzzle=puzzle,
+    solution=solution,
     difficulty='M'
 )
-print(sudoku)
-# 查询数独
-sudokus = Sudoku.objects.filter(difficulty='M')
-for s in sudokus:
-    print(s.puzzle)
+sudoku.save()
