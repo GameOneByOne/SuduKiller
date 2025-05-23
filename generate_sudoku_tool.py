@@ -61,22 +61,34 @@ def empty_some_cell(sudo_result : list, empty_cell : int, try_solve_list : list)
             try_solve_list.append([row, col])
     return
 
-def calc_try_solve_list(sudo_result : list, empty_cells : list) :
-    try_solve_list = empty_cells
+def calc_try_solve_list(sudo_result : list, try_solve_list : list) :
     for index in range(len(try_solve_list)) :
         can_fill_nums = list()
         for num in range(1, 10) :
             if valid(sudo_result, try_solve_list[index][0], try_solve_list[index][1], num) :
                 can_fill_nums.append(num)
         try_solve_list[index].append(can_fill_nums)
-    return try_solve_list
+    try_solve_list.sort(key=lambda x : len(x[2]))
+    return
 
 def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : dict, index : int = 0) :
+    print("Process {}/{} | Solution {} | Remained Time {}".format(
+        process_info['max_process'], 
+        process_info['current_process'], 
+        process_info['solution_num'], 
+        process_info["timeout"] - (time.time() - process_info["start_time"])), end='\r')
+
     if index >= len(try_solve_list) :
         process_info["solution_num"] += 1
         return
     
+    # 如果已经有多个解了，就不再继续计算了
     if (process_info["solution_num"] > 1) :
+        return
+
+    # 超时也不需要再计算了
+    if (time.time() - process_info["start_time"]) > process_info["timeout"] :
+        process_info["solution_num"] = 0
         return
 
     for num in try_solve_list[index][2] :
@@ -141,11 +153,13 @@ def generate_sudoku(difficulty):
 
         # 初始化处理过程结构体
         process_info = dict()
-        process_info["max_solution_process"] = 1
+        process_info["max_process"] = 1
+        process_info["current_process"] = 1
         process_info["solution_num"] = 0
-        process_info["current_solution_process"] = 1
+        process_info["start_time"] = time.time()
+        process_info["timeout"] = 120
         for index in range(len(try_solve_list)) :
-            process_info["max_solution_process"] *= len(try_solve_list[index][2])
+            process_info["max_process"] *= len(try_solve_list[index][2])
         
         # 计算所有可能的解
         calc_all_solution(try_solve_result, try_solve_list, process_info)
@@ -153,21 +167,20 @@ def generate_sudoku(difficulty):
             break
 
     puzzle = convert_sudo_to_str(try_solve_result)
-    show(try_solve_result)
     return puzzle, solution
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate Sudoku puzzles')
     parser.add_argument('-d', '--difficulty', type=str, choices=["E", "M", "H"], help='Difficulty level of sudoku')
     parser.add_argument('-n', '--number', type=int, default=1, help='Number of sudokus to generate')
-    parser.add_argument('-t', '--test', type=bool, default=True, help='test data will not save to database')
+    parser.add_argument('-t', '--test', action="store_true", help='test data will not save to database')
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
     for i in range(args.number):
         puzzle, solution = generate_sudoku(args.difficulty)
-        print("-------------Circle {} | Difficulty {}------------".format(i + 1, args.difficulty))
+        print("Circle {} | Difficulty {} | Puzzle {}".format(i + 1, args.difficulty, puzzle))
 
         if (args.test) :
             continue
