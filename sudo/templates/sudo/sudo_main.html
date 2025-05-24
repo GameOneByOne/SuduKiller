@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     {% load static %}
-    <link rel="stylesheet" href="{% static 'sudo/test.css' %}">
+    <link rel="stylesheet" href="{% static 'sudo/sudo_container.css' %}">
 
     <title>Hello, Sudoku!</title>
 </head>
@@ -19,9 +19,7 @@
                 {% for row in nums %}
                 <tr>
                     {% for col in row %}
-                    <td>
-                        {% if col != "0" %}{{ col }}{% endif %}
-                    </td>
+                    <td>{% if col != "0" %}{{ col }}{% endif %}</td>
                     {% endfor %}
                 </tr>
                 {% endfor %}

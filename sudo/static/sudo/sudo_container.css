@@ -1,0 +1,75 @@
+.sudoku-container {
+    display: flex;
+    max-width: 1000px;
+    align-items: flex-start;
+}
+
+.sudoku-game {
+    flex: 2;
+}
+
+#sudoku {
+    border-collapse: collapse;
+    margin: 10px auto;
+    border: 6px solid #444;
+}
+
+#sudoku td {
+    width: 50px;
+    height: 50px;
+    border: 2px dashed #aaa;
+    text-align: center;
+    font-size: 32px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+#sudoku tr:nth-child(3n) td {
+    border-bottom: 4px solid #666;
+}
+
+#sudoku td:nth-child(3n) {
+    border-right: 4px solid #666;
+}
+
+#sudoku td:hover {
+    background-color: #f5a9a9 !important;
+    z-index: 1;
+}
+
+.selected {
+    background-color: #fcf5ba !important;
+    box-shadow: 0 0 10px rgba(243, 237, 183, 0.7);
+}
+
+.row-highlight {
+    background-color: #fcf5ba !important;
+}
+
+.col-highlight {
+    background-color: #fcf5ba !important;
+}
+
+.row-highlight.col-highlight {
+    background-color: #fcf5ba !important;
+}
+
+/* 预填数字样式 */
+#sudoku td.fixed {
+    font-weight: bold;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+/* 用户输入数字样式 */
+#sudoku td.user-input {
+    color: #2196f3;
+    font-weight: bold;
+}
+
+/* 冲突数字样式 */
+#sudoku td.conflict {
+    color: #f44336 !important;
+    font-weight: bold;
+    background-color: #ffebee !important;
+}
