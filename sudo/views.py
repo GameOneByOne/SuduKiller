@@ -7,8 +7,19 @@ import random
 def sudo_solve(request):
     context = dict()
     
-    # 获取所有数独ID列表
-    sudoku_ids = list(Sudoku.objects.values_list('id', flat=True))
+    # 获取难度参数
+    difficulty = request.GET.get('difficulty')
+    
+    # 获取对应难度的数独ID列表
+    if difficulty:
+        sudoku_ids = list(Sudoku.objects.filter(difficulty=difficulty[0].upper()).values_list('id', flat=True))
+    else:
+        sudoku_ids = list(Sudoku.objects.values_list('id', flat=True))
+    
+    # 统计各难度题目数量
+    context["easy_count"] = Sudoku.objects.filter(difficulty='E').count()
+    context["medium_count"] = Sudoku.objects.filter(difficulty='M').count()
+    context["hard_count"] = Sudoku.objects.filter(difficulty='H').count()
     
     if sudoku_ids:
         random_id = random.choice(sudoku_ids)
@@ -22,7 +33,7 @@ def sudo_solve(request):
         # 如果没有数据，返回空网格
         context["nums"] = [[-1] * 9 for _ in range(9)]
     
-    return render(request, "sudo/index.html", context)
+    return render(request, "sudo/sudo_main.html", context)
 
 def sudo_occur(request) :
     if request.method == 'POST':
