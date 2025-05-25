@@ -15,6 +15,7 @@ function getCookie(name) {
 
 function send_data_to_server_when_complete() {
     const sudokuMark = document.getElementById('sudoku').dataset.mark;
+    const usedTime = document.getElementById('sudoku').dataset.usedTime;
     fetch('/sudo/complete/', {
         method: 'POST',
         headers: {
@@ -24,7 +25,7 @@ function send_data_to_server_when_complete() {
         body: JSON.stringify({
             completed: true,
             mark: sudokuMark,
-            used_time: new Date().getTime() - startTime
+            used_time: usedTime
         })
     })
     .then(response => {
@@ -44,7 +45,6 @@ function send_data_to_server_when_complete() {
 
 function send_data_to_server_when_begin() {   
     const sudokuMark = document.getElementById('sudoku').dataset.mark; 
-    const startTime = document.getElementById('sudoku').dataset.startTime;   
     fetch('/sudo/occur/', {
         method: 'POST',
         headers: {
@@ -53,7 +53,7 @@ function send_data_to_server_when_begin() {
         },
         body: JSON.stringify({
             mark: sudokuMark,
-            timestamp: startTime
+            timestamp: new Date().now
         })
     }).catch(error => console.error('首次点击请求错误:', error));
 }

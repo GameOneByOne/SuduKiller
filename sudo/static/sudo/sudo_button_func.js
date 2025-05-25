@@ -6,7 +6,7 @@ function resetGame(button) {
     });
 
     const sudoku = document.getElementById('sudoku');
-    sudoku.dataset.startTime = null;
+    sudoku.dataset.usedTime = null;
 }
 
 function showHint(button) {
