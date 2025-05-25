@@ -29,6 +29,7 @@
     padding: 2px 4px; /* 内边距 */
     border-radius: 3px; /* 圆角 */
     vertical-align: middle; /* 垂直对齐 */
+    cursor: default; /* 鼠标样式保持默认 */
 }
 
 .small-label:nth-child(2n + 1) {

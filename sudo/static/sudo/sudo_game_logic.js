@@ -38,53 +38,55 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 检查数独规则冲突
-    function checkSudokuRules(cell) {
-        const sudokuMark = document.getElementById('sudoku').dataset.mark;
-        const value = cell.textContent;
-        if (!value) return;
+    function checkSudokuRules() {
+        document.querySelectorAll('#sudoku td').forEach(cell => {
+            const value = cell.textContent;
+            if (!value) return;
+            if (cell.classList.contains('fixed')) return;
 
-        const row = cell.parentElement;
-        const colIndex = Array.from(row.children).indexOf(cell);
-        const gridRow = Math.floor(Array.from(row.parentElement.children).indexOf(row) / 3);
-        const gridCol = Math.floor(colIndex / 3);
+            const row = cell.parentElement;
+            const colIndex = Array.from(row.children).indexOf(cell);
+            const gridRow = Math.floor(Array.from(row.parentElement.children).indexOf(row) / 3);
+            const gridCol = Math.floor(colIndex / 3);
 
-        // 检查行冲突
-        for (const td of row.querySelectorAll('td')) {
-            if (td !== cell && td.textContent.trim() === value.trim()) {
-                cell.classList.add('conflict');
-                return;
+            // 检查行冲突
+            for (const td of row.querySelectorAll('td')) {
+                if (td !== cell && td.textContent.trim() === value.trim()) {
+                    cell.classList.add('conflict');
+                    return;
+                }
             }
-        }
 
-        for (const tr of document.querySelectorAll('#sudoku tr')) {
-            const td = tr.children[colIndex];
-            if (td && td !== cell && td.textContent.trim() === value.trim()) {
-                cell.classList.add('conflict');
-                return;
+            for (const tr of document.querySelectorAll('#sudoku tr')) {
+                const td = tr.children[colIndex];
+                if (td && td !== cell && td.textContent.trim() === value.trim()) {
+                    cell.classList.add('conflict');
+                    return;
+                }
             }
-        }
 
-        // 去除冲突标记
-        cell.classList.remove('conflict');
+            // 去除冲突标记
+            cell.classList.remove('conflict');
 
-        // 检查3x3宫格冲突
-        document.querySelectorAll('#sudoku tr').forEach((tr, rowIndex) => {
-            const currentGridRow = Math.floor(rowIndex / 3);
-            if (currentGridRow === gridRow) {
-                tr.querySelectorAll('td').forEach((td, tdIndex) => {
-                    const currentGridCol = Math.floor(tdIndex / 3);
-                    if (currentGridCol === gridCol && td !== cell && td.textContent.trim() === value.trim()) {
-                        cell.classList.add('conflict');
-                        return;
-                    }
-                });
+            // 检查3x3宫格冲突
+            document.querySelectorAll('#sudoku tr').forEach((tr, rowIndex) => {
+                const currentGridRow = Math.floor(rowIndex / 3);
+                if (currentGridRow === gridRow) {
+                    tr.querySelectorAll('td').forEach((td, tdIndex) => {
+                        const currentGridCol = Math.floor(tdIndex / 3);
+                        if (currentGridCol === gridCol && td !== cell && td.textContent.trim() === value.trim()) {
+                            cell.classList.add('conflict');
+                            return;
+                        }
+                    });
+                }
+            });
+
+            // 检查完成后触发成功检测
+            if (checkSudokuComplete()) {
+                send_data_to_server_when_complete();
             }
         });
-
-        // 检查完成后触发成功检测
-        if (checkSudokuComplete()) {
-            send_data_to_server_when_complete();
-        }
     }
 
     // 获取可填入的数字
@@ -150,14 +152,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key >= '1' && e.key <= '9') {
             selectedCell.textContent = e.key;
             selectedCell.classList.add('user-input');
-            checkSudokuRules(selectedCell);
+            checkSudokuRules();
             saveToStorage();
         }
         // 处理退格和删除键
         else if (e.key === 'Backspace' || e.key === 'Delete') {
             selectedCell.textContent = '';
             selectedCell.classList.remove('user-input');
-            checkSudokuRules(selectedCell);
+            checkSudokuRules();
             saveToStorage();
         }
     });
