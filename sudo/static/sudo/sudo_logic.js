@@ -1,10 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let selectedCell = null;
-    let startTime = null;
-    const sudokuMark = document.getElementById('sudoku').dataset.mark;
-    const storageKey = `sudoku_${sudokuMark}`;
-    console.log('Current Sudoku Mark:', sudokuMark);
-
     // 从本地存储恢复数据
     function restoreFromStorage() {
         const savedData = localStorage.getItem(storageKey);
@@ -35,16 +29,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }));
         localStorage.setItem(storageKey, JSON.stringify({ userInput }));
     }
-    
-    // 标记预填数字的单元格
-    // 恢复保存的数据
-    restoreFromStorage();
 
-    document.querySelectorAll('#sudoku td').forEach(cell => {
-        if (cell.textContent.trim() !== '') {
-            cell.classList.add('fixed');
+    // 获取CSRF token的函数
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
-    });
+        return cookieValue;
+    }
 
     // 检查数独是否完成
     function checkSudokuComplete() {
@@ -155,23 +155,65 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('挑战成功，但记录保存失败');
             });
         }
-
-        // 获取CSRF token的函数
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
     }
+
+    // 获取可填入的数字
+    function getPossibleNumbers(cell) {
+        const row = cell.parentElement;
+        const colIndex = Array.from(row.children).indexOf(cell);
+        const gridRow = Math.floor(Array.from(row.parentElement.children).indexOf(row) / 3);
+        const gridCol = Math.floor(colIndex / 3);
+
+        const usedNumbers = new Set();
+
+        // 检查行
+        row.querySelectorAll('td').forEach(td => {
+            if (td.textContent.trim() !== '') {
+                usedNumbers.add(td.textContent.trim());
+            }
+        });
+
+        // 检查列
+        document.querySelectorAll('#sudoku tr').forEach(tr => {
+            const td = tr.children[colIndex];
+            if (td && td.textContent.trim() !== '') {
+                usedNumbers.add(td.textContent.trim());
+            }
+        });
+
+        // 检查3x3宫格
+        document.querySelectorAll('#sudoku tr').forEach((tr, rowIndex) => {
+            const currentGridRow = Math.floor(rowIndex / 3);
+            if (currentGridRow === gridRow) {
+                tr.querySelectorAll('td').forEach((td, tdIndex) => {
+                    const currentGridCol = Math.floor(tdIndex / 3);
+                    if (currentGridCol === gridCol && td.textContent.trim() !== '') {
+                        usedNumbers.add(td.textContent.trim());
+                    }
+                });
+            }
+        });
+
+        // 返回1-9中未使用的数字
+        return Array.from({ length: 9 }, (_, i) => (i + 1).toString()).filter(num => !usedNumbers.has(num));
+    }
+
+    // 标记预填数字的单元格
+    document.querySelectorAll('#sudoku td').forEach(cell => {
+        if (cell.textContent.trim() !== '') {
+            cell.classList.add('fixed');
+        }
+    });
+
+
+    let selectedCell = null;
+    let startTime = null;
+    const sudokuMark = document.getElementById('sudoku').dataset.mark;
+    const storageKey = `sudoku_${sudokuMark}`;
+    console.log('Current Sudoku Mark:', sudokuMark);
+    
+    // 恢复保存的数据
+    restoreFromStorage();
 
     // 添加键盘事件监听
     document.addEventListener('keydown', function (e) {
@@ -257,21 +299,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-                    // 获取CSRF token的函数
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
+            // 获取可填入的数字
+            const possibleNumbers = getPossibleNumbers(this);
+            console.log('可填入的数字:', possibleNumbers);
+
+            // 在单元格上显示可填入的数字（可根据需求调整显示方式）
+            this.setAttribute('data-possible', possibleNumbers.join(', '));
         });
     });
 });
+
