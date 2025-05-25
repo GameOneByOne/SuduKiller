@@ -1,16 +1,102 @@
 .sudoku-container {
     display: flex;
-    max-width: 1000px;
+    flex-direction: column;
+    max-width: 720px;
     align-items: flex-start;
+}
+
+.sudoku-info {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: flex-end; /* 子元素靠右对齐 */
+    gap: 10px; /* 子元素之间的间距 */
+    width: 69%; /* 确保父容器占满可用空间 */
 }
 
 .sudoku-game {
     flex: 2;
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: flex-start; /* 子元素从左到右排列 */
+    align-items: center; /* 子元素垂直居中对齐 */
+    margin-top: 0px;
+}
+
+.small-label {
+    display: inline-block;
+    font-size: 10px; /* 设置字体大小 */
+    font-weight: bold; /* 加粗 */
+    color: white; /* 字体颜色 */
+    background-color: #007bff; /* 背景颜色 */
+    padding: 2px 4px; /* 内边距 */
+    border-radius: 3px; /* 圆角 */
+    vertical-align: middle; /* 垂直对齐 */
+}
+
+.small-label:nth-child(2n + 1) {
+    background-color: #28a745; /* 背景颜色 */
+    margin-left: 35px;
+}
+
+.action-button {
+    background-color: #007bff; /* 按钮背景颜色 */
+    color: white; /* 按钮文字颜色 */
+    border: none; /* 去掉边框 */
+    padding: 5px 10px; /* 减小内边距 */
+    font-size: 12px; /* 减小字体大小 */
+    font-weight: bold; /* 加粗文字 */
+    border-radius: 3px; /* 减小圆角 */
+    transition: background-color 0.3s ease; /* 添加背景色过渡效果 */
+    min-width: 60px; /* 设置按钮的最小宽度 */
+}
+
+#sudoku-hint {
+    font-size: 14px; /* 可选：调整提示文字大小 */
+    color: #333; /* 可选：设置提示文字颜色 */
+    background-color: #f9f9f9; /* 可选：设置提示框背景色 */
+    border: 1px solid #ccc; /* 可选：为提示框添加边框 */
+    border-radius: 5px; /* 可选：为提示框添加圆角 */
+    margin-left: 10px;
+}
+
+#sudoku-hint {
+    font-size: 14px; /* 调整字体大小 */
+    color: #333; /* 设置文字颜色 */
+    padding: 1px; /* 添加内边距 */
+    background-color: #f9f9f9; /* 设置背景颜色 */
+    border: 1px solid #ccc; /* 添加边框 */
+    border-radius: 8px; /* 添加圆角 */
+    width: 200px; /* 设置固定宽度 */
+    height: 500px; /* 设置固定高度 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    text-align: center; /* 文本居中对齐 */
+    line-height: 1.5; /* 调整行高 */
+    margin-left: 20px; /* 与其他元素保持间距 */
+}
+
+.hidden {
+    visibility: hidden; /* 隐藏元素，但保留布局 */
+    opacity: 0; /* 可选：将透明度设置为 0，增强隐藏效果 */
+}
+
+.action-button:hover {
+    background-color: #0056b3; /* 鼠标悬停时的背景颜色 */
+}
+
+.action-button:active {
+    background-color: #003f7f; /* 按下时的背景颜色 */
+}
+
+.sudoku-button {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: flex-end; /* 子元素靠右对齐 */
+    gap: 10px; /* 按钮之间的间距 */
+    margin-top: 2px; /* 与其他内容的间距 */
+    width: 69%
 }
 
 #sudoku {
+    max-width: 500px;
     border-collapse: collapse;
-    margin: 10px auto;
+    margin: 2px auto;
     border: 6px solid #444;
 }
 

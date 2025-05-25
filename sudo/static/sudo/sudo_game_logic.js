@@ -189,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 如果是第一次点击，开始计时并发送请求
-            if (!startTime) {
-                const sudoku = document.getElementById('sudoku');
+            const sudoku = document.getElementById('sudoku');
+            if (!sudoku.dataset.startTime || sudoku.dataset.startTime === 'null') {
                 sudoku.dataset.startTime = (new Date()).toISOString();
                 startTime = new Date();
                 send_data_to_server_when_begin();
@@ -218,7 +218,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // 获取可填入的数字
             const possibleNumbers = getPossibleNumbers(this);
-            console.log('可填入的数字:', possibleNumbers);
+            const sudoku_hint = document.getElementById('sudoku-hint');
+            sudoku_hint.textContent = "可填入数字: " + possibleNumbers.join(', ');
 
             // 在单元格上显示可填入的数字（可根据需求调整显示方式）
             this.setAttribute('data-possible', possibleNumbers.join(', '));

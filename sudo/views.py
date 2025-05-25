@@ -4,8 +4,16 @@ import json
 from .models import Sudoku
 import random
 
+
+difficulty_map = {
+    'E': '简单',
+    'M': '中等',
+    'H': '困难'
+}
+
 def sudo_solve(request):
     context = dict()
+    context["difficulty_map"] = difficulty_map
     
     # 获取难度参数
     difficulty = request.GET.get('difficulty')
@@ -16,16 +24,11 @@ def sudo_solve(request):
     else:
         sudoku_ids = list(Sudoku.objects.values_list('id', flat=True))
     
-    # 统计各难度题目数量
-    context["easy_count"] = Sudoku.objects.filter(difficulty='E').count()
-    context["medium_count"] = Sudoku.objects.filter(difficulty='M').count()
-    context["hard_count"] = Sudoku.objects.filter(difficulty='H').count()
-    
     if sudoku_ids:
         random_id = random.choice(sudoku_ids)
         sudoku = Sudoku.objects.get(id=random_id)
         context["nums"] = sudoku.get_grid()
-        context["difficulty"] = sudoku.difficulty
+        context["difficulty"] = difficulty_map[sudoku.difficulty]
         context["try_nums"] = sudoku.try_nums
         context["sloved_nums"] = sudoku.sloved_nums
         context["mark"] = sudoku.mark

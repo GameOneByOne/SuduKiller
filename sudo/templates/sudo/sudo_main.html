@@ -14,6 +14,14 @@
 
 <body>
     <div class="sudoku-container">
+        <div class="sudoku-info">
+            <span class="small-label">难度:</span>
+            <span class="small-label">{{ difficulty }}</span>
+            <span class="small-label">尝试次数:</span>
+            <span class="small-label">{{ try_nums }}</span>
+            <span class="small-label">成功次数:</span>
+            <span class="small-label">{{ sloved_nums }}</span>
+        </div>
         <div class="sudoku-game">
             <table id="sudoku" data-mark="{{ mark }}">
                 {% for row in nums %}
@@ -24,10 +32,16 @@
                 </tr>
                 {% endfor %}
             </table>
+            <div id="sudoku-hint"></div>
+        </div>
+        <div class="sudoku-button">
+            <button class="action-button" onclick="resetGame()">重置游戏</button>
+            <button class="action-button" onclick="showHint()">提示</button>
         </div>
     </div>
     <script src="{% static 'sudo/sudo_data_archive.js' %}"></script>
     <script src="{% static 'sudo/sudo_backen_api.js' %}"></script>
+    <script src="{% static 'sudo/sudo_button_func.js' %}"></script>
     <script src="{% static 'sudo/sudo_game_logic.js' %}"></script>
 </body>
 
