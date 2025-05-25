@@ -1,51 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 从本地存储恢复数据
-    function restoreFromStorage() {
-        const savedData = localStorage.getItem(storageKey);
-        if (savedData) {
-            try {
-                const data = JSON.parse(savedData);
-                document.querySelectorAll('#sudoku td').forEach((cell, index) => {
-                    if (data.userInput[index]) {
-                        cell.textContent = data.userInput[index].value;
-                        if (data.userInput[index].isUserInput) {
-                            cell.classList.add('user-input');
-                        }
-                    }
-                });
-                console.log('从本地存储恢复数据成功');
-            } catch (e) {
-                console.error('恢复数据失败:', e);
-            }
-        }
-    }
-
-    // 保存数据到本地存储
-    function saveToStorage() {
-        const cells = document.querySelectorAll('#sudoku td');
-        const userInput = Array.from(cells).map(cell => ({
-            value: cell.textContent,
-            isUserInput: cell.classList.contains('user-input')
-        }));
-        localStorage.setItem(storageKey, JSON.stringify({ userInput }));
-    }
-
-    // 获取CSRF token的函数
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
     // 检查数独是否完成
     function checkSudokuComplete() {
         // 检查所有单元格是否填满且无冲突
@@ -86,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 检查数独规则冲突
     function checkSudokuRules(cell) {
+        const sudokuMark = document.getElementById('sudoku').dataset.mark;
         const value = cell.textContent;
         if (!value) return;
 
@@ -129,31 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // 检查完成后触发成功检测
         if (checkSudokuComplete()) {
-            fetch('/sudo/complete/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-                body: JSON.stringify({
-                    completed: true,
-                    mark: sudokuMark,
-                    used_time: new Date().getTime() - startTime
-                })
-            })
-            .then(response => {
-                console.log(response)
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-            })
-            .then(data => {
-                alert('恭喜你 挑战成功！');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('挑战成功，但记录保存失败');
-            });
+            send_data_to_server_when_complete();
         }
     }
 
@@ -208,9 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let selectedCell = null;
     let startTime = null;
-    const sudokuMark = document.getElementById('sudoku').dataset.mark;
-    const storageKey = `sudoku_${sudokuMark}`;
-    console.log('Current Sudoku Mark:', sudokuMark);
     
     // 恢复保存的数据
     restoreFromStorage();
@@ -263,20 +190,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // 如果是第一次点击，开始计时并发送请求
             if (!startTime) {
+                const sudoku = document.getElementById('sudoku');
+                sudoku.dataset.startTime = (new Date()).toISOString();
                 startTime = new Date();
-                console.log('计时开始:', startTime);
-                
-                fetch('/sudo/occur/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken'),
-                    },
-                    body: JSON.stringify({
-                        mark: sudokuMark,
-                        timestamp: startTime.toISOString()
-                    })
-                }).catch(error => console.error('首次点击请求错误:', error));
+                send_data_to_server_when_begin();
             }
             
             // 选中新单元格
