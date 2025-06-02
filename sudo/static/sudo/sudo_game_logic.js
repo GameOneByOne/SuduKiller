@@ -81,11 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 }
             });
-
-            // 检查完成后触发成功检测
-            if (checkSudokuComplete()) {
-                send_data_to_server_when_complete();
-            }
         });
     }
 
@@ -130,6 +125,20 @@ document.addEventListener('DOMContentLoaded', function () {
         return Array.from({ length: 9 }, (_, i) => (i + 1).toString()).filter(num => !usedNumbers.has(num));
     }
 
+    // 填充数独提示区域内容
+    function generateHintBoxes(arr) {
+        const hintContainer = document.getElementById('sudoku-hint-container');
+        hintContainer.innerHTML = ''; // 清空容器内容
+    
+        // 生成数字盒子
+        arr.forEach(item => {
+            const box = document.createElement('div');
+            box.className = 'hint-box'; // 添加类名
+            box.textContent = item; // 设置数字内容
+            hintContainer.appendChild(box); // 添加到容器中
+        });
+    }
+
     // 标记预填数字的单元格
     document.querySelectorAll('#sudoku td').forEach(cell => {
         if (cell.textContent.trim() !== '') {
@@ -159,6 +168,11 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedCell.classList.remove('user-input');
             checkSudokuRules();
             saveToStorage();
+        }
+
+        // 检查完成后触发成功检测
+        if (checkSudokuComplete()) {
+            send_data_to_server_when_complete();
         }
     });
 
@@ -243,8 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // 获取可填入的数字
             const possibleNumbers = getPossibleNumbers(this);
-            const sudoku_hint = document.getElementById('sudoku-hint');
-            sudoku_hint.textContent = "可填入数字: " + possibleNumbers.join(', ');
+            generateHintBoxes(possibleNumbers);
 
             // 在单元格上显示可填入的数字（可根据需求调整显示方式）
             this.setAttribute('data-possible', possibleNumbers.join(', '));

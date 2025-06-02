@@ -32,3 +32,9 @@ function saveToStorage() {
     }));
     localStorage.setItem(storageKey, JSON.stringify({ userInput }));
 }
+
+// 清空本地所有数据
+function clearStorage() {
+    localStorage.clear();   
+    console.log('清空本地存储数据成功');
+}

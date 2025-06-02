@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'sudo/sudo_container.css' %}">
 
     <title>Hello, Sudoku!</title>
+    <style></style>
 </head>
 
 <body>
@@ -32,13 +33,16 @@
                 </tr>
                 {% endfor %}
             </table>
-            <div id="sudoku-hint"></div>
+            <div id="sudoku-hint">
+                <div id="sudoku-hint-container"></div>
+            </div>
         </div>
         <div class="sudoku-button">
             <button class="action-button" onclick="resetGame(this)">重置游戏</button>
             <button class="action-button" onclick="showHint(this)">开启提示</button>
         </div>
     </div>
+    <script></script>
     <script src="{% static 'sudo/sudo_data_archive.js' %}"></script>
     <script src="{% static 'sudo/sudo_backen_api.js' %}"></script>
     <script src="{% static 'sudo/sudo_button_func.js' %}"></script>

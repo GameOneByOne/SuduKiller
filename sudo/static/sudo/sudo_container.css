@@ -50,27 +50,46 @@
 }
 
 #sudoku-hint {
-    font-size: 14px; /* 可选：调整提示文字大小 */
-    color: #333; /* 可选：设置提示文字颜色 */
-    background-color: #f9f9f9; /* 可选：设置提示框背景色 */
-    border: 1px solid #ccc; /* 可选：为提示框添加边框 */
-    border-radius: 5px; /* 可选：为提示框添加圆角 */
-    margin-left: 10px;
-}
-
-#sudoku-hint {
-    font-size: 14px; /* 调整字体大小 */
+    display:flex;
+    flex-wrap: wrap;
     color: #333; /* 设置文字颜色 */
     padding: 1px; /* 添加内边距 */
     background-color: #f9f9f9; /* 设置背景颜色 */
+    justify-content: center;
     border: 1px solid #ccc; /* 添加边框 */
     border-radius: 8px; /* 添加圆角 */
     width: 200px; /* 设置固定宽度 */
     height: 500px; /* 设置固定高度 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
-    text-align: center; /* 文本居中对齐 */
-    line-height: 1.5; /* 调整行高 */
     margin-left: 20px; /* 与其他元素保持间距 */
+}
+
+#sudoku-hint-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-flow: row wrap;
+    justify-content: center; /* 子元素水平居中 */
+    margin-top: 20px;
+    border-radius: 8px;
+    border-width: 2px;
+    height:30%;
+    gap: 5px;
+    width: 80%; /* 确保容器占满可用空间 */
+}
+
+.hint-box {
+    margin : 0;
+    margin: 2.5%;
+    width: 25%; /* 盒子宽度 */
+    height: 25%; /* 盒子高度 */
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    background-color: #007bff; /* 盒子背景色 */
+    color: white; /* 文字颜色 */
+    font-size: 16px; /* 字体大小 */
+    font-weight: bold; /* 加粗 */
+    border-radius: 30%; /* 圆形盒子 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
 }
 
 .hidden {
@@ -145,7 +164,7 @@
 #sudoku td.fixed {
     font-weight: bold;
     color: #333;
-    background-color: #f9f9f9;
+    background-color: #e8e8e8;
 }
 
 /* 用户输入数字样式 */
