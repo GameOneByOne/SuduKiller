@@ -27,8 +27,8 @@
             <table id="sudoku" data-mark="{{ mark }}">
                 {% for row in nums %}
                 <tr>
-                    {% for col in row %}
-                    <td>{% if col != "0" %}{{ col }}{% endif %}</td>
+                    {% for cell in row %}
+                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
                     {% endfor %}
                 </tr>
                 {% endfor %}

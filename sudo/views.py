@@ -27,7 +27,7 @@ def sudo_solve(request):
     if sudoku_ids:
         random_id = random.choice(sudoku_ids)
         sudoku = Sudoku.objects.get(id=random_id)
-        context["nums"] = sudoku.get_grid()
+        context["nums"] = [[{'value': col, 'cell_index': row_index * 9 + col_index} for col_index, col in enumerate(row)] for row_index, row in enumerate(sudoku.get_grid())]
         context["difficulty"] = difficulty_map[sudoku.difficulty]
         context["try_nums"] = sudoku.try_nums
         context["sloved_nums"] = sudoku.sloved_nums

@@ -125,17 +125,63 @@ document.addEventListener('DOMContentLoaded', function () {
         return Array.from({ length: 9 }, (_, i) => (i + 1).toString()).filter(num => !usedNumbers.has(num));
     }
 
+    // 获取所有可填入单元格的数字并存储到本地缓存
+    function cachePossibleNumbers() {
+        const possibleNumbersCache = {};
+
+        document.querySelectorAll('#sudoku td').forEach((cell, index) => {
+            // 跳过预填单元格
+            if (cell.classList.contains('fixed')) return;
+
+            // 获取可填入的数字
+            const possibleNumbers = getPossibleNumbers(cell);
+
+            // 将可填入的数字存储到缓存对象中，使用单元格索引作为键
+            const possibleNumbersContent = [];
+            possibleNumbers.forEach(item => {
+                possibleNumbersContent.push({
+                    value: item,
+                    mark : true,
+                });
+            });
+            possibleNumbersCache[cell.getAttribute("cell-index")] = possibleNumbersContent;
+        });
+
+        // 将缓存对象存储到 localStorage 中
+        localStorage.setItem('possibleNumbersCache', JSON.stringify(possibleNumbersCache));
+        console.log('可填入数字已缓存:', possibleNumbersCache);
+    }
+
     // 填充数独提示区域内容
-    function generateHintBoxes(arr) {
+    function generateHintBoxes() {
         const hintContainer = document.getElementById('sudoku-hint-container');
         hintContainer.innerHTML = ''; // 清空容器内容
     
+        // 生成缓冲数据
+        if (localStorage.hasOwnProperty("possibleNumbersCache") === false) {
+            cachePossibleNumbers();
+        }
         // 生成数字盒子
-        arr.forEach(item => {
+        const cacheNumbers = JSON.parse(localStorage.getItem("possibleNumbersCache"));
+        cacheNumbers[selectedCell.getAttribute("cell-index")].forEach(item => {
             const box = document.createElement('div');
-            box.className = 'hint-box'; // 添加类名
-            box.textContent = item; // 设置数字内容
+            box.className = 'hint-box'; // 添加类名s
+            box.textContent = item.value; // 设置数字内容
             hintContainer.appendChild(box); // 添加到容器中
+            if (item.mark) {
+                box.style.backgroundColor = '#007bff';
+            } else {
+                box.style.backgroundColor = 'lightgray';
+            }
+            box.addEventListener('click', () => {
+                box.style.backgroundColor = 'lightgray';
+                cacheNumbers[selectedCell.getAttribute("cell-index")].forEach(item => {
+                    if (item.value === box.textContent.trim()) {
+                        item.mark = false;
+                    }
+                });
+                localStorage["possibleNumbersCache"] = JSON.stringify(cacheNumbers);
+            });
         });
     }
 
@@ -150,6 +196,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // 恢复保存的数据
     restoreFromStorage();
+
+    // 初始化数独提示区域的信息
+    cachePossibleNumbers();
 
     // 添加键盘事件监听
     document.addEventListener('keydown', function (e) {
@@ -256,11 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // 获取可填入的数字
-            const possibleNumbers = getPossibleNumbers(this);
-            generateHintBoxes(possibleNumbers);
-
-            // 在单元格上显示可填入的数字（可根据需求调整显示方式）
-            this.setAttribute('data-possible', possibleNumbers.join(', '));
+            generateHintBoxes();
         });
     });
 
@@ -273,6 +318,9 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (document.visibilityState === 'visible') {
             // 页面可见时恢复计时器
             const specificElement = document.querySelector('[data-name="usedTimeLabel"]');
+            if (!specificElement) {
+                return;
+            }
             const sudoku = document.getElementById('sudoku');
             const intervalId = setInterval(() => {
                 const used_time = +(sudoku.dataset.usedTime);

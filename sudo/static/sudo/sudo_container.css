@@ -67,7 +67,7 @@
 #sudoku-hint-container {
     display: flex; /* 使用 Flexbox 布局 */
     flex-flow: row wrap;
-    justify-content: center; /* 子元素水平居中 */
+    justify-content: left; /* 子元素水平居中 */
     margin-top: 20px;
     border-radius: 8px;
     border-width: 2px;
@@ -90,6 +90,11 @@
     font-weight: bold; /* 加粗 */
     border-radius: 30%; /* 圆形盒子 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    cursor: default;
+}
+
+.hint-box:hover {
+    background-color: #74b5fb; /* 盒子背景色 */
 }
 
 .hidden {
