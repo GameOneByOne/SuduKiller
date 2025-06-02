@@ -261,37 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 如果是第一次点击，开始计时并发送请求
-            const sudoku = document.getElementById('sudoku');
-            if (!sudoku.dataset.usedTime || sudoku.dataset.usedTime === 'null') {
-                sudoku.dataset.usedTime = 1;
-                send_data_to_server_when_begin();
-
-                const sudokuInfo = document.querySelector('.sudoku-info');
-                if (!sudokuInfo.dataset.used_time) {
-                    sudokuInfo.dataset.used_time = true;
-                    const newSpanLabel = document.createElement('span');
-                    newSpanLabel.className = 'small-label';
-                    newSpanLabel.textContent = '计时';
-                    const newSpanInfo = document.createElement('span');
-                    newSpanInfo.className = 'small-label';
-                    newSpanInfo.textContent = '';
-                    newSpanInfo.dataset.name = "usedTimeLabel";
-                    sudokuInfo.insertBefore(newSpanInfo, sudokuInfo.firstChild);
-                    sudokuInfo.insertBefore(newSpanLabel, sudokuInfo.firstChild);
-                    // 设置定时器每秒更新一次
-                    newSpanInfo.textContent = "00:00";
-                    const intervalId = setInterval(() => {
-                        const used_time = +(sudoku.dataset.usedTime);
-                        const minutes = Math.floor(used_time / 60); // 计算分钟
-                        const remainingSeconds = used_time % 60; // 计算剩余秒数
-                        const formattedMinutes = String(minutes).padStart(2, '0');
-                        const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-                        newSpanInfo.textContent = formattedMinutes + ':' + formattedSeconds;
-                        sudoku.dataset.usedTime = +(sudoku.dataset.usedTime) + 1;
-                    }, 1000);
-                    sudoku.dataset.interval = intervalId;
-                }
-            }
+            beginTiming();
             
             // 选中新单元格
             this.classList.add('selected');
@@ -322,25 +292,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') {
             // 页面不可见时暂停计时器
-            const sudoku = document.getElementById('sudoku');
-            clearInterval(sudoku.dataset.interval);
+            endTiming();
         } else if (document.visibilityState === 'visible') {
             // 页面可见时恢复计时器
-            const specificElement = document.querySelector('[data-name="usedTimeLabel"]');
-            if (!specificElement) {
-                return;
-            }
-            const sudoku = document.getElementById('sudoku');
-            const intervalId = setInterval(() => {
-                const used_time = +(sudoku.dataset.usedTime);
-                const minutes = Math.floor(used_time / 60); // 计算分钟
-                const remainingSeconds = used_time % 60; // 计算剩余秒数
-                const formattedMinutes = String(minutes).padStart(2, '0');
-                const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-                specificElement.textContent = formattedMinutes + ':' + formattedSeconds;
-                sudoku.dataset.usedTime = +(sudoku.dataset.usedTime) + 1;
-            }, 1000);
-            sudoku.dataset.interval = intervalId;
+            beginTiming();
         }
     });
 });

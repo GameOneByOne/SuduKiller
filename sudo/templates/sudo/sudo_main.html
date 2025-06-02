@@ -16,11 +16,11 @@
 <body>
     <div class="sudoku-container">
         <div class="sudoku-info">
-            <span class="small-label">难度:</span>
+            <span class="small-label">难度 :</span>
             <span class="small-label">{{ difficulty }}</span>
-            <span class="small-label">尝试次数:</span>
+            <span class="small-label">尝试次数 :</span>
             <span class="small-label">{{ try_nums }}</span>
-            <span class="small-label">成功次数:</span>
+            <span class="small-label">成功次数 :</span>
             <span class="small-label">{{ sloved_nums }}</span>
         </div>
         <div class="sudoku-game">
@@ -43,6 +43,7 @@
         </div>
     </div>
     <script></script>
+    <script src="{% static 'sudo/sudo_utils.js' %}"></script>
     <script src="{% static 'sudo/sudo_data_archive.js' %}"></script>
     <script src="{% static 'sudo/sudo_backen_api.js' %}"></script>
     <script src="{% static 'sudo/sudo_button_func.js' %}"></script>

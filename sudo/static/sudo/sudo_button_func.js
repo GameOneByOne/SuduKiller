@@ -5,9 +5,8 @@ function resetGame(button) {
         }
     });
 
-    const sudoku = document.getElementById('sudoku');
-    sudoku.dataset.usedTime = null;
     clearStorage();
+    resetTiming();
 }
 
 function showHint(button) {
