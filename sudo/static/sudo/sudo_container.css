@@ -1,3 +1,10 @@
+body {
+    background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); /* 设置纹理背景图案 */
+    background-color: #f9f9f9; /* 设置背景颜色 */
+    background-repeat: repeat; /* 让纹理图案重复 */
+    background-size: auto; /* 保持原始大小 */
+}
+
 .sudoku-container {
     display: flex;
     flex-direction: column;
@@ -22,19 +29,19 @@
 
 .small-label {
     display: inline-block;
-    font-size: 10px; /* 设置字体大小 */
+    font-size: 12px; /* 设置字体大小 */
     font-weight: bold; /* 加粗 */
     color: white; /* 字体颜色 */
     background-color: #007bff; /* 背景颜色 */
-    padding: 2px 4px; /* 内边距 */
-    border-radius: 3px; /* 圆角 */
+    padding: 3px 8px; /* 内边距 */
+    border-radius: 5px; /* 圆角 */
     vertical-align: middle; /* 垂直对齐 */
     cursor: default; /* 鼠标样式保持默认 */
 }
 
 .small-label:nth-child(2n + 1) {
     background-color: #28a745; /* 背景颜色 */
-    margin-left: 35px;
+    margin-left: 10px;
 }
 
 .action-button {

@@ -174,12 +174,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 box.style.backgroundColor = 'lightgray';
             }
             box.addEventListener('click', () => {
-                box.style.backgroundColor = 'lightgray';
-                cacheNumbers[selectedCell.getAttribute("cell-index")].forEach(item => {
-                    if (item.value === box.textContent.trim()) {
-                        item.mark = false;
-                    }
-                });
+                if (item.mark) {
+                    box.style.backgroundColor = 'lightgray';
+                    cacheNumbers[selectedCell.getAttribute("cell-index")].forEach(item => {
+                        if (item.value === box.textContent.trim()) {
+                            item.mark = false;
+                        }
+                    });
+                } else {
+                    box.style.backgroundColor = '#007bff';
+                    cacheNumbers[selectedCell.getAttribute("cell-index")].forEach(item => {
+                        if (item.value === box.textContent.trim()) {
+                            item.mark = true;
+                        }
+                    });
+                }
                 localStorage["possibleNumbersCache"] = JSON.stringify(cacheNumbers);
             });
         });
