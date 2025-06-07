@@ -1,0 +1,154 @@
+body {
+    background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); /* 设置纹理背景图案 */
+    background-color: #f9f9f9; /* 设置背景颜色 */
+    background-repeat: repeat; /* 让纹理图案重复 */
+    background-size: auto; /* 保持原始大小 */
+}
+
+.main-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-wrap: wrap; /* 如果一行放不下，自动换行 */
+    height: 100%;
+    width: 100%;
+    justify-content: flex-start; /* 子元素左对齐 */
+    align-items: center; /* 子元素顶部对齐 */
+}
+
+/* 导航栏样式 */
+.navbar {
+    background-color: #007bff; /* 背景颜色 */
+    color: white; /* 字体颜色 */
+    padding: 10px 20px; /* 内边距 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    position: sticky; /* 固定在页面顶部 */
+    top: 0;
+    z-index: 1000;
+}
+
+/* 导航栏容器 */
+.navbar-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: left; /* 左右两端对齐 */
+    align-items: center; /* 垂直居中 */
+}
+
+/* 导航栏 Logo */
+.navbar-logo {
+    font-size: 20px; /* 字体大小 */
+    font-weight: bold; /* 加粗 */
+    text-decoration: none; /* 去掉下划线 */
+    color: white; /* 字体颜色 */
+}
+
+/* 导航菜单 */
+.navbar-menu {
+    list-style: none; /* 去掉列表样式 */
+    display: flex; /* 使用 Flexbox 布局 */
+    gap: 15px; /* 菜单项之间的间距 */
+    margin: 0; /* 去掉默认外边距 */
+    padding: 0; /* 去掉默认内边距 */
+}
+
+/* 导航链接 */
+.navbar-link {
+    text-decoration: none; /* 去掉下划线 */
+    color: white; /* 字体颜色 */
+    font-size: 16px; /* 字体大小 */
+    transition: color 0.3s ease; /* 添加颜色过渡效果 */
+}
+
+/* 鼠标悬停效果 */
+.navbar-link:hover {
+    color: #ffeb3b; /* 鼠标悬停时的字体颜色 */
+}
+
+.small-label {
+    display: inline-block;
+    font-size: 1vw;
+    white-space: nowrap;
+    font-weight: bold; /* 加粗 */
+    color: white; /* 字体颜色 */
+    background-color: #007bff; /* 背景颜色 */
+    padding: 3px 8px; /* 内边距 */
+    border-radius: 5px; /* 圆角 */
+    vertical-align: middle; /* 垂直对齐 */
+    cursor: default; /* 鼠标样式保持默认 */
+}
+
+.small-label:nth-child(2n + 1) {
+    background-color: #28a745; /* 背景颜色 */
+    /* margin-left: 10px; */
+}
+
+.puzzle-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* 基本山是3 * 3 的显示 */
+    margin: 2%;
+    width: 29%;
+    height: 26%;
+    min-width: 300px;
+    min-height: 240px;
+}
+
+.puzzle-panel-info {
+    width: 25%; /* 宽度占满父容器 */
+    height: 100%; /* 高度占满父容器 */
+    margin: 5px 8px;
+    gap: 5px;
+    display: flex;
+    flex-wrap: wrap; /* 如果一行放不下，自动换行 */
+    justify-content: flex-end; /* 子元素右对齐 */
+}
+
+.vertical-line {
+    display: inline-block;
+    width: 2px; /* 竖线宽度 */
+    background-color: #1e0505; /* 竖线颜色 */
+    height: 80%;
+    min-height: 200px; /* 竖线高度占满父容器 */
+    margin: 0 2px; /* 设置竖线与左右元素的间距 */
+}
+
+.pazzle-mask {
+    position: absolute; /* 绝对定位，覆盖整个父容器 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* 确保蒙版在最上层 */
+    text-decoration: none; /* 去掉超链接下划线 */
+}
+
+.pazzle-mask:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* 鼠标悬停时改变蒙版透明度 */
+}
+
+.sudoku {
+    width: 55%;
+    max-width: 300px;
+    max-height:300px;
+    border-collapse: collapse;
+    margin: 2% 2%;
+    border: 5px solid #282828;
+}
+
+.sudoku td {
+    width: 10%;
+    height: 10%;
+    border: 2px dashed #aaa;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+.sudoku tr:nth-child(3n) td {
+    border-bottom: 3px solid #666;
+}
+
+.sudoku td:nth-child(3n) {
+    border-right: 3px solid #666;
+}

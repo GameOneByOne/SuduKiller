@@ -6,7 +6,7 @@ function restoreFromStorage() {
     if (savedData) {
         try {
             const data = JSON.parse(savedData);
-            document.querySelectorAll('#sudoku td').forEach((cell, index) => {
+            document.querySelectorAll('.sudoku td').forEach((cell, index) => {
                 if (data.userInput[index]) {
                     cell.textContent = data.userInput[index].value;
                     if (data.userInput[index].isUserInput) {
@@ -25,7 +25,7 @@ function restoreFromStorage() {
 function saveToStorage() {
     const sudokuMark = document.getElementById('sudoku').dataset.mark;
     const storageKey = `sudoku_${sudokuMark}`;
-    const cells = document.querySelectorAll('#sudoku td');
+    const cells = document.querySelectorAll('.sudoku td');
     const userInput = Array.from(cells).map(cell => ({
         value: cell.textContent,
         isUserInput: cell.classList.contains('user-input')

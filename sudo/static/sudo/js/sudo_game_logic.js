@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 检查数独是否完成
     function checkSudokuComplete() {
         // 检查所有单元格是否填满且无冲突
-        const cells = document.querySelectorAll('#sudoku td');
+        const cells = document.querySelectorAll('.sudoku td');
         for (const cell of cells) {
             // 检查单元格是否为空或存在冲突
             if (cell.textContent.trim() === '' || cell.classList.contains('conflict')) {
@@ -18,17 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
             
             for (let j = 0; j < 9; j++) {
                 // 检查行
-                const rowCell = document.querySelector(`#sudoku tr:nth-child(${i+1}) td:nth-child(${j+1})`);
+                const rowCell = document.querySelector(`.sudoku tr:nth-child(${i+1}) td:nth-child(${j+1})`);
                 if (rowValues.has(rowCell.textContent)) return false;
                 rowValues.add(rowCell.textContent);
                 
                 // 检查列
-                const colCell = document.querySelector(`#sudoku tr:nth-child(${j+1}) td:nth-child(${i+1})`);
+                const colCell = document.querySelector(`.sudoku tr:nth-child(${j+1}) td:nth-child(${i+1})`);
                 if (colValues.has(colCell.textContent)) return false;
                 colValues.add(colCell.textContent);
                 
                 // 检查3x3宫格
-                const boxCell = document.querySelector(`#sudoku tr:nth-child(${Math.floor(i/3)*3 + Math.floor(j/3) + 1}) td:nth-child(${(i%3)*3 + (j%3) + 1})`);
+                const boxCell = document.querySelector(`.sudoku tr:nth-child(${Math.floor(i/3)*3 + Math.floor(j/3) + 1}) td:nth-child(${(i%3)*3 + (j%3) + 1})`);
                 if (boxValues.has(boxCell.textContent)) return false;
                 boxValues.add(boxCell.textContent);
             }
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 检查数独规则冲突
     function checkSudokuRules() {
-        document.querySelectorAll('#sudoku td').forEach(cell => {
+        document.querySelectorAll('.sudoku td').forEach(cell => {
             const value = cell.textContent;
             if (!value) return;
             if (cell.classList.contains('fixed')) return;
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            for (const tr of document.querySelectorAll('#sudoku tr')) {
+            for (const tr of document.querySelectorAll('.sudoku tr')) {
                 const td = tr.children[colIndex];
                 if (td && td !== cell && td.textContent.trim() === value.trim()) {
                     cell.classList.add('conflict');
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cell.classList.remove('conflict');
 
             // 检查3x3宫格冲突
-            document.querySelectorAll('#sudoku tr').forEach((tr, rowIndex) => {
+            document.querySelectorAll('.sudoku tr').forEach((tr, rowIndex) => {
                 const currentGridRow = Math.floor(rowIndex / 3);
                 if (currentGridRow === gridRow) {
                     tr.querySelectorAll('td').forEach((td, tdIndex) => {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // 检查列
-        document.querySelectorAll('#sudoku tr').forEach(tr => {
+        document.querySelectorAll('.sudoku tr').forEach(tr => {
             const td = tr.children[colIndex];
             if (td && td.textContent.trim() !== '') {
                 usedNumbers.add(td.textContent.trim());
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // 检查3x3宫格
-        document.querySelectorAll('#sudoku tr').forEach((tr, rowIndex) => {
+        document.querySelectorAll('.sudoku tr').forEach((tr, rowIndex) => {
             const currentGridRow = Math.floor(rowIndex / 3);
             if (currentGridRow === gridRow) {
                 tr.querySelectorAll('td').forEach((td, tdIndex) => {
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function cachePossibleNumbers() {
         const possibleNumbersCache = {};
 
-        document.querySelectorAll('#sudoku td').forEach((cell, index) => {
+        document.querySelectorAll('.sudoku td').forEach((cell, index) => {
             // 跳过预填单元格
             if (cell.classList.contains('fixed')) return;
 
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 标记预填数字的单元格
-    document.querySelectorAll('#sudoku td').forEach(cell => {
+    document.querySelectorAll('.sudoku td').forEach(cell => {
         if (cell.textContent.trim() !== '') {
             cell.classList.add('fixed');
         }
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.querySelectorAll('#sudoku td').forEach(cell => {
+    document.querySelectorAll('.sudoku td').forEach(cell => {
         cell.addEventListener('click', function () {
             // 如果已经有选中的单元格，先取消其选中状态
             if (selectedCell) {
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // 高亮整列
-            document.querySelectorAll('#sudoku tr').forEach(tr => {
+            document.querySelectorAll('.sudoku tr').forEach(tr => {
                 if (tr.children[colIndex]) {
                     tr.children[colIndex].classList.add('col-highlight');
                 }

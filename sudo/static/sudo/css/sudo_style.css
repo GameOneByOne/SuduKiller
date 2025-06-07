@@ -5,11 +5,62 @@ body {
     background-size: auto; /* 保持原始大小 */
 }
 
-.sudoku-container {
-    display: flex;
-    flex-direction: column;
-    max-width: 720px;
-    align-items: flex-start;
+.main-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-wrap: wrap; /* 如果一行放不下，自动换行 */
+    gap: 10px; /* 设置子元素之间的间距 */
+    height: 100%;
+    width: 100%;
+    justify-content: flex-start; /* 子元素左对齐 */
+    align-items: flex-start; /* 子元素顶部对齐 */
+}
+
+/* 导航栏样式 */
+.navbar {
+    background-color: #007bff; /* 背景颜色 */
+    color: white; /* 字体颜色 */
+    padding: 10px 20px; /* 内边距 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    position: sticky; /* 固定在页面顶部 */
+    top: 0;
+    z-index: 1000;
+}
+
+/* 导航栏容器 */
+.navbar-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: left; /* 左右两端对齐 */
+    align-items: center; /* 垂直居中 */
+}
+
+/* 导航栏 Logo */
+.navbar-logo {
+    font-size: 20px; /* 字体大小 */
+    font-weight: bold; /* 加粗 */
+    text-decoration: none; /* 去掉下划线 */
+    color: white; /* 字体颜色 */
+}
+
+/* 导航菜单 */
+.navbar-menu {
+    list-style: none; /* 去掉列表样式 */
+    display: flex; /* 使用 Flexbox 布局 */
+    gap: 15px; /* 菜单项之间的间距 */
+    margin: 0; /* 去掉默认外边距 */
+    padding: 0; /* 去掉默认内边距 */
+}
+
+/* 导航链接 */
+.navbar-link {
+    text-decoration: none; /* 去掉下划线 */
+    color: white; /* 字体颜色 */
+    font-size: 16px; /* 字体大小 */
+    transition: color 0.3s ease; /* 添加颜色过渡效果 */
+}
+
+/* 鼠标悬停效果 */
+.navbar-link:hover {
+    color: #ffeb3b; /* 鼠标悬停时的字体颜色 */
 }
 
 .sudoku-info {
@@ -19,17 +70,34 @@ body {
     width: 69%; /* 确保父容器占满可用空间 */
 }
 
-.sudoku-game {
-    flex: 2;
-    display: flex; /* 使用 Flexbox 布局 */
+.puzzle-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
     justify-content: flex-start; /* 子元素从左到右排列 */
-    align-items: center; /* 子元素垂直居中对齐 */
-    margin-top: 0px;
+    padding: 5%;
+    width: 25%;
+    height: 25%;
+    max-width:400px;
+    min-width: 300px; /* 设置最小宽度 */
+    max-height: 300px; /* 设置最大高度 */
+    min-height: 200px; /* 设置最小高度 */
+}
+
+.puzzle-panel-info {
+    width: 20%; /* 宽度占满父容器 */
+    height: 100%; /* 高度占满父容器 */
+    margin: 10px 10px;
+    gap: 5px;
+    display: flex;
+    flex-wrap: wrap; /* 如果一行放不下，自动换行 */
+    justify-content: flex-end; /* 子元素右对齐 */
 }
 
 .small-label {
     display: inline-block;
-    font-size: 12px; /* 设置字体大小 */
+    font-size: 1vw;
+    white-space: nowrap;
     font-weight: bold; /* 加粗 */
     color: white; /* 字体颜色 */
     background-color: #007bff; /* 背景颜色 */
@@ -39,9 +107,18 @@ body {
     cursor: default; /* 鼠标样式保持默认 */
 }
 
+.vertical-line {
+    display: inline-block;
+    width: 2px; /* 竖线宽度 */
+    background-color: #1e0505; /* 竖线颜色 */
+    height: 80%;
+    min-height: 200px; /* 竖线高度占满父容器 */
+    margin: 0 10px; /* 设置竖线与左右元素的间距 */
+}
+
 .small-label:nth-child(2n + 1) {
     background-color: #28a745; /* 背景颜色 */
-    margin-left: 10px;
+    /* margin-left: 10px; */
 }
 
 .action-button {
@@ -125,32 +202,46 @@ body {
     width: 69%
 }
 
-#sudoku {
+.pazzle-mask {
+    position: absolute; /* 绝对定位，覆盖整个父容器 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* 确保蒙版在最上层 */
+    text-decoration: none; /* 去掉超链接下划线 */
+}
+
+.pazzle-mask:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* 鼠标悬停时改变蒙版透明度 */
+}
+
+.sudoku {
     max-width: 500px;
     border-collapse: collapse;
-    margin: 2px auto;
+    margin: 10px 10px;
     border: 6px solid #444;
 }
 
-#sudoku td {
-    width: 50px;
-    height: 50px;
+.sudoku td {
+    width: 18px;
+    height: 18px;
     border: 2px dashed #aaa;
     text-align: center;
-    font-size: 32px;
+    font-size: 16px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: relative;
 }
 
-#sudoku tr:nth-child(3n) td {
+.sudoku tr:nth-child(3n) td {
     border-bottom: 4px solid #666;
 }
 
-#sudoku td:nth-child(3n) {
+.sudoku td:nth-child(3n) {
     border-right: 4px solid #666;
 }
 
-#sudoku td:hover {
+.sudoku td:hover {
     background-color: #f5a9a9 !important;
     z-index: 1;
 }
@@ -173,20 +264,20 @@ body {
 }
 
 /* 预填数字样式 */
-#sudoku td.fixed {
+.sudoku td.fixed {
     font-weight: bold;
     color: #333;
     background-color: #e8e8e8;
 }
 
 /* 用户输入数字样式 */
-#sudoku td.user-input {
+.sudoku td.user-input {
     color: #2196f3;
     font-weight: bold;
 }
 
 /* 冲突数字样式 */
-#sudoku td.conflict {
+.sudoku td.conflict {
     color: #f44336 !important;
     font-weight: bold;
     background-color: #ffebee !important;

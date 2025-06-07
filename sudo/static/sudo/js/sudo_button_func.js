@@ -1,5 +1,5 @@
 function resetGame(button) {
-    document.querySelectorAll('#sudoku td').forEach(cell => {
+    document.querySelectorAll('.sudoku td').forEach(cell => {
         if (!cell.classList.contains('fixed')) {
             cell.textContent = '';
         }
