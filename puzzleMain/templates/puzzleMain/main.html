@@ -8,7 +8,7 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static 'puzzleMain/css/main_style.css' %}">
-
+    <link rel="stylesheet" href="{% static 'sudo/css/sudo_panel.css' %}">
     <title>Hello, Sudoku!</title>
     <style></style>
 </head>
@@ -26,70 +26,7 @@
     </nav>
 
     <div class="main-container">
-        <div class="puzzle-panel">
-            <a href="#" class="pazzle-mask"></a>
-            <div class="puzzle-panel-info">
-                <span class="small-label">难度 :</span>
-                <span class="small-label">{{ difficulty }}</span>
-                <span class="small-label">尝试次数 :</span>
-                <span class="small-label">{{ try_nums }}</span>
-                <span class="small-label">成功次数 :</span>
-                <span class="small-label">{{ sloved_nums }}</span>
-            </div>
-            <div class="vertical-line"></div>
-            <table class="sudoku" data-mark="{{ mark }}">
-                {% for row in nums %}
-                <tr>
-                    {% for cell in row %}
-                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="puzzle-panel">
-            <a href="#" class="pazzle-mask"></a>
-            <div class="puzzle-panel-info">
-                <span class="small-label">难度 :</span>
-                <span class="small-label">{{ difficulty }}</span>
-                <span class="small-label">尝试次数 :</span>
-                <span class="small-label">{{ try_nums }}</span>
-                <span class="small-label">成功次数 :</span>
-                <span class="small-label">{{ sloved_nums }}</span>
-            </div>
-            <div class="vertical-line"></div>
-            <table class="sudoku" data-mark="{{ mark }}">
-                {% for row in nums %}
-                <tr>
-                    {% for cell in row %}
-                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="puzzle-panel">
-            <a href="#" class="pazzle-mask"></a>
-            <div class="puzzle-panel-info">
-                <span class="small-label">难度 :</span>
-                <span class="small-label">{{ difficulty }}</span>
-                <span class="small-label">尝试次数 :</span>
-                <span class="small-label">{{ try_nums }}</span>
-                <span class="small-label">成功次数 :</span>
-                <span class="small-label">{{ sloved_nums }}</span>
-            </div>
-            <div class="vertical-line"></div>
-            <table class="sudoku" data-mark="{{ mark }}">
-                {% for row in nums %}
-                <tr>
-                    {% for cell in row %}
-                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        </div>
+        {% include 'sudo/sudo_panel.html' %}
     </div>
     <script></script>
 </body>

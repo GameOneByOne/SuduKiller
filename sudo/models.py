@@ -33,7 +33,7 @@ class Sudoku(models.Model):
     
     sloved_nums = models.IntegerField(default=0)
     try_nums = models.IntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     mark = models.CharField(max_length=32, editable=False, unique=True)
     
     def save(self, *args, **kwargs):

@@ -14,30 +14,17 @@
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="#" class="navbar-logo">Sudoku</a>
-            <ul class="navbar-menu">
-                <li><a href="#home" class="navbar-link">首页</a></li>
-                <li><a href="#about" class="navbar-link">关于</a></li>
-                <li><a href="#contact" class="navbar-link">联系</a></li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="main-container">
-        <div class="puzzle-panel">
-            <a href="#" class="pazzle-mask"></a>
-            <div class="puzzle-panel-info">
-                <span class="small-label">难度 :</span>
-                <span class="small-label">{{ difficulty }}</span>
-                <span class="small-label">尝试次数 :</span>
-                <span class="small-label">{{ try_nums }}</span>
-                <span class="small-label">成功次数 :</span>
-                <span class="small-label">{{ sloved_nums }}</span>
-            </div>
-            <div class="vertical-line"></div>
-            <table class="sudoku" data-mark="{{ mark }}">
+        <div class="sudoku-info">
+            <span class="small-label">难度 :</span>
+            <span class="small-label">{{ difficulty }}</span>
+            <span class="small-label">尝试次数 :</span>
+            <span class="small-label">{{ try_nums }}</span>
+            <span class="small-label">成功次数 :</span>
+            <span class="small-label">{{ sloved_nums }}</span>
+        </div>
+        <div class="sudoku-game">
+            <table id="sudoku" data-mark="{{ mark }}">
                 {% for row in nums %}
                 <tr>
                     {% for cell in row %}
@@ -46,58 +33,21 @@
                 </tr>
                 {% endfor %}
             </table>
-        </div>
-        <div class="puzzle-panel">
-            <a href="#" class="pazzle-mask"></a>
-            <div class="puzzle-panel-info">
-                <span class="small-label">难度 :</span>
-                <span class="small-label">{{ difficulty }}</span>
-                <span class="small-label">尝试次数 :</span>
-                <span class="small-label">{{ try_nums }}</span>
-                <span class="small-label">成功次数 :</span>
-                <span class="small-label">{{ sloved_nums }}</span>
+            <div id="sudoku-hint">
+                <div id="sudoku-hint-container"></div>
             </div>
-            <div class="vertical-line"></div>
-            <table class="sudoku" data-mark="{{ mark }}">
-                {% for row in nums %}
-                <tr>
-                    {% for cell in row %}
-                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
         </div>
-        </div>
-        <div class="puzzle-panel">
-            <a href="#" class="pazzle-mask"></a>
-            <div class="puzzle-panel-info">
-                <span class="small-label">难度 :</span>
-                <span class="small-label">{{ difficulty }}</span>
-                <span class="small-label">尝试次数 :</span>
-                <span class="small-label">{{ try_nums }}</span>
-                <span class="small-label">成功次数 :</span>
-                <span class="small-label">{{ sloved_nums }}</span>
-            </div>
-            <div class="vertical-line"></div>
-            <table class="sudoku" data-mark="{{ mark }}">
-                {% for row in nums %}
-                <tr>
-                    {% for cell in row %}
-                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+        <div class="sudoku-button">
+            <button class="action-button" onclick="resetGame(this)">重置游戏</button>
+            <button class="action-button" onclick="showHint(this)">开启提示</button>
         </div>
     </div>
     <script></script>
-    <script src="{% static 'sudo/js/sudo_utils.js' %}"></script>
-    <script src="{% static 'sudo/js/sudo_data_archive.js' %}"></script>
-    <script src="{% static 'sudo/js/sudo_backen_api.js' %}"></script>
-    <script src="{% static 'sudo/js/sudo_button_func.js' %}"></script>
-    <script src="{% static 'sudo/js/sudo_game_logic.js' %}"></script>
+    <script src="{% static 'sudo/sudo_utils.js' %}"></script>
+    <script src="{% static 'sudo/sudo_data_archive.js' %}"></script>
+    <script src="{% static 'sudo/sudo_backen_api.js' %}"></script>
+    <script src="{% static 'sudo/sudo_button_func.js' %}"></script>
+    <script src="{% static 'sudo/sudo_game_logic.js' %}"></script>
 </body>
 
 </html>
