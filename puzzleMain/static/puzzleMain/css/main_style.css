@@ -10,7 +10,7 @@ body {
     flex-wrap: wrap; /* 如果一行放不下，自动换行 */
     height: 100%;
     width: 100%;
-    justify-content: flex-start; /* 子元素左对齐 */
+    justify-content: center; /* 子元素左对齐 */
     align-items: center; /* 子元素顶部对齐 */
 }
 
@@ -64,7 +64,7 @@ body {
 
 .small-label {
     display: inline-block;
-    font-size: 1vw;
+    font-size: 12px;
     white-space: nowrap;
     font-weight: bold; /* 加粗 */
     color: white; /* 字体颜色 */
@@ -91,6 +91,7 @@ body {
     height: 26%;
     min-width: 300px;
     min-height: 240px;
+    max-width: 400px;
 }
 
 .puzzle-panel-info {
