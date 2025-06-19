@@ -10,6 +10,8 @@ body {
     flex-wrap: wrap; /* 如果一行放不下，自动换行 */
     height: 100%;
     width: 100%;
+    max-width: 1524px; /* 最大宽度限制 */
+    margin: 0 auto; /* 居中对齐 */
     justify-content: center; /* 子元素左对齐 */
     align-items: center; /* 子元素顶部对齐 */
 }
@@ -20,6 +22,9 @@ body {
     color: white; /* 字体颜色 */
     padding: 10px 20px; /* 内边距 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    border-radius: 30PX;
+    max-width: 1524px; /* 最大宽度限制 */
+    margin: 0 auto; /* 居中对齐 */
     position: sticky; /* 固定在页面顶部 */
     top: 0;
     z-index: 1000;
@@ -37,6 +42,7 @@ body {
     font-size: 20px; /* 字体大小 */
     font-weight: bold; /* 加粗 */
     text-decoration: none; /* 去掉下划线 */
+    margin-right: 20px; /* Logo 与菜单之间的间距 */
     color: white; /* 字体颜色 */
 }
 

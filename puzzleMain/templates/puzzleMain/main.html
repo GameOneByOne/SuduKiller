@@ -10,7 +10,32 @@
     <link rel="stylesheet" href="{% static 'puzzleMain/css/main_style.css' %}">
     <link rel="stylesheet" href="{% static 'sudo/css/sudo_panel.css' %}">
     <title>Hello, Sudoku!</title>
-    <style></style>
+    <style>
+        .achievement-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 400px;
+            margin: 40px auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .achievement-icon {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 16px;
+        }
+        .achievement-type {
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 12px;
+        }
+        .achievement-description {
+            margin-top: 16px;
+            color: #444;
+        }
+    </style>
 </head>
 
 <body>
@@ -18,15 +43,15 @@
         <div class="navbar-container">
             <a href="#" class="navbar-logo">Sudoku</a>
             <ul class="navbar-menu">
-                <li><a href="#home" class="navbar-link">首页</a></li>
-                <li><a href="#about" class="navbar-link">关于</a></li>
-                <li><a href="#contact" class="navbar-link">联系</a></li>
+                <li><a href="{% url 'PuzzleMain' %}" class="navbar-link">首页</a></li>
+                <li><a href="{% url 'PuzzleAchievement' %}" class="navbar-link">成就</a></li>
+                <li><a href="#contact" class="navbar-link">Thanks</a></li>
             </ul>
         </div>
     </nav>
 
     <div class="main-container">
-        {% include 'sudo/sudo_panel.html' %}
+        {{ panel_content|safe }}
     </div>
     <script></script>
 </body>

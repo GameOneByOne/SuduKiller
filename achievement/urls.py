@@ -15,14 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-import sudo.urls
-import achievement.urls
-import puzzleMain.urls
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path("", include(puzzleMain.urls)),
-    path("admin/", admin.site.urls),
-    path("sudo/", include(sudo.urls)),
-    path("achievement/", include(achievement.urls)),
+    path("", views.achievement_main, name="Achievement"),
 ]

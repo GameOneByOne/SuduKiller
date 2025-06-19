@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sudo.apps.SudoConfig',
-    'puzzleMain.apps.PuzzlemainConfig'
+    'puzzleMain.apps.PuzzlemainConfig',
+    'achievement.apps.AchievementConfig',
 ]
 
 MIDDLEWARE = [

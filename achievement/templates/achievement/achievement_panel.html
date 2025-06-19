@@ -1,0 +1,10 @@
+{% for data in achievement_datas %}
+<div class="achievement-panel">
+    <div class="achievement-card">
+        <img class="achievement-icon" src="{{ data.icon }}" alt="{{ data.name }} 图标">
+        <h2>{{ data.name }}</h2>
+        <div class="achievement-type">类型：{{ data.type }}</div>
+        <div class="achievement-description">{{ data.description }}</div>
+    </div>
+</div>
+{%endfor %}

@@ -19,5 +19,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.puzzle_main, name="PsuzzleMain"),
+    path("", views.puzzle_main, name="PuzzleMain"),
+    path("achievement", views.puzzle_achievement, name="PuzzleAchievement"),
 ]
