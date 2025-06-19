@@ -6,25 +6,29 @@ body {
 }
 
 .main-container {
-    display: flex; /* 使用 Flexbox 布局 */
-    flex-wrap: wrap; /* 如果一行放不下，自动换行 */
     gap: 10px; /* 设置子元素之间的间距 */
     height: 100%;
     width: 100%;
-    justify-content: flex-start; /* 子元素左对齐 */
-    align-items: flex-start; /* 子元素顶部对齐 */
 }
 
 .sudoku-info {
     display: flex; /* 使用 Flexbox 布局 */
-    justify-content: flex-end; /* 子元素靠右对齐 */
+    justify-content: center; /* 子元素中间对齐 */
     gap: 10px; /* 子元素之间的间距 */
-    width: 69%; /* 确保父容器占满可用空间 */
+    width: 100%; /* 确保父容器占满可用空间 */
+}
+
+.sudoku-game {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: center; /* 子元素中间对齐 */
+    gap: 10px; /* 设置子元素之间的间距 */
+    height: 100%;
+    width: 100%;
 }
 
 .small-label {
     display: inline-block;
-    font-size: 1vw;
+    font-size: 12px;
     white-space: nowrap;
     font-weight: bold; /* 加粗 */
     color: white; /* 字体颜色 */
@@ -33,15 +37,6 @@ body {
     border-radius: 5px; /* 圆角 */
     vertical-align: middle; /* 垂直对齐 */
     cursor: default; /* 鼠标样式保持默认 */
-}
-
-.vertical-line {
-    display: inline-block;
-    width: 2px; /* 竖线宽度 */
-    background-color: #1e0505; /* 竖线颜色 */
-    height: 80%;
-    min-height: 200px; /* 竖线高度占满父容器 */
-    margin: 0 10px; /* 设置竖线与左右元素的间距 */
 }
 
 .small-label:nth-child(2n + 1) {
@@ -131,7 +126,9 @@ body {
 }
 
 #sudoku {
-    max-width: 500px;
+    max-width: 450px;
+    width: 50%;
+    max-height: 450px;
     border-collapse: collapse;
     margin: 10px 10px;
     border: 6px solid #444;
@@ -142,7 +139,7 @@ body {
     height: 18px;
     border: 2px dashed #aaa;
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     position: relative;
 }
@@ -161,7 +158,7 @@ body {
 }
 
 .selected {
-    background-color: #fcf5ba !important;
+    background-color: #d88888 !important;
     box-shadow: 0 0 10px rgba(243, 237, 183, 0.7);
 }
 
@@ -178,20 +175,20 @@ body {
 }
 
 /* 预填数字样式 */
-.sudoku td.fixed {
+#sudoku td.fixed {
     font-weight: bold;
     color: #333;
     background-color: #e8e8e8;
 }
 
 /* 用户输入数字样式 */
-.sudoku td.user-input {
+#sudoku td.user-input {
     color: #2196f3;
     font-weight: bold;
 }
 
 /* 冲突数字样式 */
-.sudoku td.conflict {
+#sudoku td.conflict {
     color: #f44336 !important;
     font-weight: bold;
     background-color: #ffebee !important;
