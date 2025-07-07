@@ -11,18 +11,66 @@
     <link rel="stylesheet" href="{% static 'sudo/css/sudo_panel.css' %}">
     <link rel="stylesheet" href="{% static 'achievement/css/achievement_panel.css' %}">
     <title>Hello, Sudoku!</title>
-    <style></style>
+    <style>
+        .avatar-panel {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #333;
+        margin-left: 16px;
+        position: relative;
+        cursor: pointer;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 36px;
+            right: 0;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-width: 120px;
+            z-index: 100;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 16px;
+            color: #333;
+            text-decoration: none;
+        }
+        .dropdown-menu a:hover {
+            background: #f0f0f0;
+        }
+        .avatar-panel:hover .dropdown-menu,
+        .avatar-panel:focus-within .dropdown-menu {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="#" class="navbar-logo">Sudoku</a>
-            <ul class="navbar-menu">
-                <li><a href="{% url 'PuzzleMain' %}" class="navbar-link">首页</a></li>
-                <li><a href="{% url 'PuzzleAchievement' %}" class="navbar-link">成就</a></li>
-                <li><a href="#contact" class="navbar-link">Thanks</a></li>
-            </ul>
+            <div class ="navbar-left">
+                <a href="#" class="navbar-logo">Sudoku</a>
+                <ul class="navbar-menu">
+                    <li><a href="{% url 'PuzzleMain' %}" class="navbar-link">首页</a></li>
+                    <li><a href="{% url 'PuzzleAchievement' %}" class="navbar-link">成就</a></li>
+                    <li><a href="#contact" class="navbar-link">Thanks</a></li>
+                </ul>
+            </div>
+
+            <div class="navbar-right">
+                <div class="avatar-panel">
+                    <img src="https://q4.itc.cn/q_70/images03/20240112/abf40adae4ac41e79f65887ecd62a825.jpeg" alt="头像" class="avatar-img">
+                    <div class="dropdown-menu">
+                        <p>在这里进行用户操作</p>
+                        <a href="">注册</a>
+                        <a href="">登录</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 

@@ -33,6 +33,7 @@
                 </tr>
                 {% endfor %}
             </table>
+            <canvas id="myCanvas" style="position: absolute; top:46px; left:133px;"></canvas>
             <div id="sudoku-hint">
                 <div id="sudoku-hint-container"></div>
             </div>
@@ -42,7 +43,69 @@
             <button class="action-button" onclick="showHint(this)">开启提示</button>
         </div>
     </div>
-    <script></script>
+    <script>
+        function draw_one_cell(current_cell_position, current_cell_value, all_cell_positions) {
+            console.log("....  ", current_cell_position, current_cell_value);
+            var c = document.getElementById("myCanvas");
+            var cxt = c.getContext("2d");
+            cxt.strokeStyle = 'black';
+            cxt.setLineDash([15, 5]);
+
+            // 如果左边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] - 1])) {
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * 45 + 2, current_cell_position[1] * 45 + 2);
+                cxt.lineTo(current_cell_position[0] * 45 + 2, current_cell_position[1] * 45 + 45 - 2);
+                cxt.stroke();
+            }
+
+            // // 如果右边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] + 1])) {
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * 45 + 45 - 2, current_cell_position[1] * 45 + 2);
+                cxt.lineTo(400, 0);
+                cxt.stroke();
+            }
+
+            // // 如果上边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] - 1])) {
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * 45 + 2, current_cell_position[1] * 45 + 2);
+                cxt.lineTo(400, 0);
+                cxt.stroke();
+            }
+
+            // // 如果下边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] - 1])) {
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * 45 + 2, current_cell_position[1] * 45 + 2);
+                cxt.lineTo(400, 0);
+                cxt.stroke();
+            }
+
+
+            // 检查一下是不是最左上角的格子，是的话填充数字
+            
+
+        }
+        var element = document.getElementById('sudoku');
+        var rect = element.getBoundingClientRect();
+        console.log('Top: ' + rect.top);
+        console.log('Right: ' + rect.right);
+        console.log('Bottom: ' + rect.bottom);
+        console.log('Left: ' + rect.left);
+        console.log('Width: ' + rect.width);
+        console.log('Height: ' + rect.height);
+        var regions = [[[0,0], [0,1], [1,0]]];
+        var datas = [9];
+        for (let i = 0; i < regions.length; i++) {
+            for (let j = 0; j < regions[i].length; j++) {
+                draw_one_cell(regions[i][j], datas[i], regions[i]);
+            }
+        }
+
+
+    </script>
     <script src="{% static 'sudo/js/sudo_utils.js' %}"></script>
     <script src="{% static 'sudo/js/sudo_data_archive.js' %}"></script>
     <script src="{% static 'sudo/js/sudo_backen_api.js' %}"></script>
