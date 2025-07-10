@@ -47,23 +47,17 @@ class SudokuGenerator() :
         # 查看一个块里面是否有重复
         for row_index in range((row // 3) * 3, ((row // 3) + 1) * 3) :
             for col_index in range((col // 3) * 3, ((col // 3) + 1) * 3) :
-                if sudo_result[row_index][col_index] <= 0 :
-                    continue
-                elif sudo_result[row_index][col_index] == data :
+                if sudo_result[row_index][col_index] == data  :
                     return False
 
         # 查看一行里面是否有重复
         for col_index in range(9) :
-            if sudo_result[row][col_index] <= 0 :
-                continue
-            elif sudo_result[row][col_index] == data :
+            if sudo_result[row][col_index] == data :
                 return False
 
         # 查看一列里面是否有重复
         for row_index in range(9) :
-            if sudo_result[row_index][col] <= 0 :
-                continue
-            elif sudo_result[row_index][col] == data :
+            if sudo_result[row_index][col] == data :
                 return False
 
         return True
