@@ -6,7 +6,7 @@ import django
 import argparse
 from copy import deepcopy
 from utils_define import REGION_DIVISION, DIRECTION_DIFF
-from utils import SudokuGenerator
+from utils import SudokuGenerator, show_process
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
@@ -136,10 +136,8 @@ def region_division(sudo_result : list, difficulty: str, region_list : list) :
         dealed_regions.append([row, col])
 
         # 根据概率计算要占用几个单元格
-        final_region_size = 0
-        current_region_size = get_cell_region_num(region_division_datas)
-        current_region_size -= 1
-        
+        current_region_size = get_cell_region_num(region_division_datas) - 1
+
         for _ in range(0, current_region_size) :
             # 扩展单元格
             if not extend_cell(current_deal_regions, dealed_regions, all_regions) :
@@ -154,19 +152,16 @@ def region_division(sudo_result : list, difficulty: str, region_list : list) :
     return
 
 def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : dict, index : int = 0) :
-    print("Process {}% | Solution {} | Remained Time {} | Status {}".format(
-        round(float(process_info['current_process']) * 100 / process_info['max_process'], 2),
-        process_info['solution_num'],
-        process_info["timeout"] - int(time.time() - process_info["start_time"]),
-        process_info["status"]), end='\r')
+    show_process(process_info)
 
     if index >= len(try_solve_list) :
         process_info["solution_num"] += 1
+
+    # 评估解的情况
+    if process_info["solution_num"] == 1 :
         process_info["status"] = "perfect solution"
         return
-
-    # 如果已经有多个解了，就不再继续计算了
-    if (process_info["solution_num"] > 1) :
+    elif process_info["solution_num"] > 1 :
         process_info["status"] = "too mant solutions"
         return
 
@@ -240,11 +235,7 @@ def generate_killer_sudoku(difficulty):
         # 计算所有可能的解
         try_solve_result = [[0 for _ in range(9)] for _ in range(9)]
         calc_all_solution(try_solve_result, try_solve_list, process_info)
-        print("Process {}% | Solution {} | Remained Time {} | Status {}".format(
-            round(float(process_info['current_process']) * 100 / process_info['max_process'], 2),
-            process_info['solution_num'],
-            process_info["timeout"] - int(time.time() - process_info["start_time"]),
-            process_info["status"]), end='\r')
+        show_process(process_info)
         time.sleep(5)
         print("\n")
         print("Terminal Status {}\n".format(process_info["status"]))

@@ -1,4 +1,12 @@
+import time
 import random
+
+def show_process(process_info : dict) :
+    print("Process {}% | Solution {} | Remained Time {} | Status {}".format(
+        round(float(process_info['current_process']) * 100 / process_info['max_process'], 2),
+        process_info['solution_num'],
+        process_info["timeout"] - int(time.time() - process_info["start_time"]),
+        process_info["status"]), end='\r')
 
 
 class SudokuGenerator() :
