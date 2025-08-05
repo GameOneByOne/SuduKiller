@@ -1,18 +1,19 @@
 import os
 import sys
 import time
+import json
 import random
 import django
 import argparse
 from copy import deepcopy
 from utils_define import REGION_DIVISION, DIRECTION_DIFF
-from utils import SudokuGenerator, show_process
+from utils import SudokuGenerator, SudokuValidator, SudoKuLogger
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
 django.setup()
 
-from sudo.models import Sudoku
+from sudoKiller.models import SudokuKiller
 
 def convert_sudo_to_str(sudoku : list) :
     return ''.join(str(sudoku[row][col]) for row in range(9) for col in range(9))
@@ -152,7 +153,7 @@ def region_division(sudo_result : list, difficulty: str, region_list : list) :
     return
 
 def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : dict, index : int = 0) :
-    show_process(process_info)
+    SudoKuLogger.show_process(process_info)
 
     if index >= len(try_solve_list) :
         process_info["solution_num"] += 1
@@ -179,7 +180,7 @@ def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : 
         # 先验证有没有问题
         valid_mark = True
         for ind in range(0, len(nums)) :
-            if not SudokuGenerator.valid(sudo_result, cells[ind][0], cells[ind][1], nums[ind]) :
+            if not SudokuValidator.valid(sudo_result, cells[ind][0], cells[ind][1], nums[ind]) :
                 valid_mark = False
                 break
 
@@ -199,9 +200,8 @@ def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : 
             sudo_result[cells[ind][0]][cells[ind][1]] = 0
 
 def generate_killer_sudoku(difficulty):
-    generator = SudokuGenerator()
-    generator.generate()
-    solution = generator.get_result()
+    SudokuGenerator.generate()
+    solution = SudokuGenerator.get_result()
 
     # 每次迭代都尝试挖空一些数字，然后计算所有可能的解，如果只有唯一的解，则退出循环
     while True:
@@ -209,7 +209,6 @@ def generate_killer_sudoku(difficulty):
         try_solve_list = list()
         region_list = list()
         try_solve_result = deepcopy(solution)
-        puzzle = convert_sudo_to_str(try_solve_result)
         
         # 根据规则，随机划分一些区域
         region_division(try_solve_result, difficulty, region_list)
@@ -235,14 +234,14 @@ def generate_killer_sudoku(difficulty):
         # 计算所有可能的解
         try_solve_result = [[0 for _ in range(9)] for _ in range(9)]
         calc_all_solution(try_solve_result, try_solve_list, process_info)
-        show_process(process_info)
+        SudoKuLogger.show_process(process_info)
         time.sleep(5)
         print("\n")
         print("Terminal Status {}\n".format(process_info["status"]))
         if (process_info["status"] == "perfect solution"):
             break
 
-    return puzzle, region_list
+    return try_solve_list, convert_sudo_to_str(solution)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Generate Sudoku puzzles')
@@ -259,10 +258,18 @@ if __name__ == '__main__':
 
         if (args.test) :
             continue
-        
+
+        puzzle_json = list()
+        for index in range(len(puzzle)) :
+            record = dict()
+            record["regions"] = puzzle[index][0]
+            record["sum"] = sum(puzzle[index][1][0])
+            record["num_choices"] = puzzle[index][1]
+            puzzle_json.append(record)
+
         # 存入数据库
-        sudoku = Sudoku.objects.create(
-            puzzle=puzzle,
+        sudoku = SudokuKiller.objects.create(
+            puzzle=puzzle_json,
             solution=solution,
             difficulty=args.difficulty
         )

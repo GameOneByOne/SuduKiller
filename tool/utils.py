@@ -1,55 +1,61 @@
 import time
 import random
 
-def show_process(process_info : dict) :
-    print("Process {}% | Solution {} | Remained Time {} | Status {}".format(
-        round(float(process_info['current_process']) * 100 / process_info['max_process'], 2),
-        process_info['solution_num'],
-        process_info["timeout"] - int(time.time() - process_info["start_time"]),
-        process_info["status"]), end='\r')
 
+g_sudo_result = list()
+g_selected_data = list()
+
+class SudoKuLogger() :
+    @staticmethod
+    def show_process(process_info : dict) :
+        print("Process {}% | Solution {} | Remained Time {} | Status {}".format(
+            round(float(process_info['current_process']) * 100 / process_info['max_process'], 2),
+            process_info['solution_num'],
+            process_info["timeout"] - int(time.time() - process_info["start_time"]),
+            process_info["status"]), end='\r')
 
 class SudokuGenerator() :
-    sudo_result = list()
-    selected_data = list()
+    @staticmethod
+    def init() :
+        global g_sudo_result
+        global g_selected_data
 
-    def init(self) :
-        self.sudo_result = list()
-        self.selected_data = list()
-
-        # 清空并初始化sudo_result
+        # 重制全局变量
+        g_sudo_result = [[-1] * 9 for _ in range(9)]
+        g_selected_data = [[list(range(1, 10)) for _ in range(9)] for _ in range(9)]
         for row in range(9):
-            self.sudo_result.append([-1] * 9)
-
-        # 配置数独的生成
-        for row in range(9):
-            self.selected_data.append(list())
             for col in range(9) :
-                self.selected_data[row].append(list(range(1, 10)))
-                random.shuffle(self.selected_data[row][col])
+                random.shuffle(g_selected_data[row][col])
 
-    def generate(self, row : int = 0, col : int = 0) :
+    @staticmethod
+    def generate(row : int = 0, col : int = 0) :
         # 首次要初始化
         if row == 0 and col == 0 :
-            self.init()
+            __class__.init()
 
         # 先生成一个完整的数字列表
         if row > 8 or col > 8 :
             return True
 
         for index in range(9) :
-            selected_num = self.selected_data[row][col][index]
-            if not self.valid(self.sudo_result, row, col, selected_num) :
+            selected_num = g_selected_data[row][col][index]
+            if not SudokuValidator.valid(g_sudo_result, row, col, selected_num) :
                 continue
 
-            self.sudo_result[row][col] = selected_num
-            if not self.generate(row + (col + 1) // 9, (col + 1) % 9) :
-                self.sudo_result[row][col] = -1
+            g_sudo_result[row][col] = selected_num
+            if not __class__.generate(row + (col + 1) // 9, (col + 1) % 9) :
+                g_sudo_result[row][col] = -1
             else :
                 return True
 
         return False
 
+    @staticmethod
+    def get_result() :
+        global g_sudo_result
+        return g_sudo_result
+
+class SudokuValidator() :
     @staticmethod
     def valid(sudo_result : list, row : int, col : int, data : int) :
         # 查看一个块里面是否有重复
@@ -69,7 +75,4 @@ class SudokuGenerator() :
                 return False
 
         return True
-    
-    def get_result(self) :
-        return self.sudo_result
 

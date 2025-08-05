@@ -6,7 +6,7 @@ import django
 import argparse
 from copy import deepcopy
 from utils_define import EMPTY_CELLS
-from utils import SudokuGenerator
+from utils import SudokuGenerator, SudokuValidator
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
@@ -31,7 +31,7 @@ def calc_try_solve_list(sudo_result : list, try_solve_list : list) :
     for index in range(len(try_solve_list)) :
         can_fill_nums = list()
         for num in range(1, 10) :
-            if SudokuGenerator.valid(sudo_result, try_solve_list[index][0], try_solve_list[index][1], num) :
+            if SudokuValidator.valid(sudo_result, try_solve_list[index][0], try_solve_list[index][1], num) :
                 can_fill_nums.append(num)
         try_solve_list[index].append(can_fill_nums)
     try_solve_list.sort(key=lambda x : len(x[2]))
@@ -57,16 +57,15 @@ def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : 
         return
 
     for num in try_solve_list[index][2] :
-        if not SudokuGenerator.valid(sudo_result, try_solve_list[index][0], try_solve_list[index][1], num) :
+        if not SudokuValidator.valid(sudo_result, try_solve_list[index][0], try_solve_list[index][1], num) :
             continue
         sudo_result[try_solve_list[index][0]][try_solve_list[index][1]] = num
         calc_all_solution(sudo_result, try_solve_list, process_info, index + 1)
         sudo_result[try_solve_list[index][0]][try_solve_list[index][1]] = 0
 
 def generate_sudoku(difficulty):
-    generator = SudokuGenerator()
-    generator.generate()
-    solution = generator.get_result()
+    SudokuGenerator.generate()
+    solution = SudokuGenerator.get_result()
 
     # 每次迭代都尝试挖空一些数字，然后计算所有可能的解，如果只有唯一的解，则退出循环
     while True:
