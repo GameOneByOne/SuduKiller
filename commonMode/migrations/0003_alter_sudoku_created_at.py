@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sudo', '0002_alter_sudoku_sloved_nums'),
+        ('commonMode', '0002_alter_sudoku_sloved_nums'),
     ]
 
     operations = [

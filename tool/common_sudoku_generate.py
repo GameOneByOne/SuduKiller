@@ -9,10 +9,10 @@ from utils_define import EMPTY_CELLS
 from utils import SudokuGenerator, SudokuValidator, SudoKuLogger
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudokuWeb.settings')
 django.setup()
 
-from sudo.models import Sudoku
+from commonMode.models import CommonSudoku
 
 def convert_sudo_to_str(sudoku : list) :
     return ''.join(str(sudoku[row][col]) for row in range(9) for col in range(9))
@@ -123,7 +123,7 @@ if __name__ == '__main__':
             continue
         
         # 存入数据库
-        sudoku = Sudoku.objects.create(
+        sudoku = CommonSudoku.objects.create(
             puzzle=puzzle,
             solution=solution,
             difficulty=args.difficulty

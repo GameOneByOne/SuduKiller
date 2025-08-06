@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 import hashlib
 
-class Sudoku(models.Model):
+class CommonSudoku(models.Model):
     DIFFICULTY_CHOICES = [
         ('E', 'Easy'),
         ('M', 'Medium'), 

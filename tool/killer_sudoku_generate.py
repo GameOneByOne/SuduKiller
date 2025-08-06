@@ -10,10 +10,10 @@ from utils_define import REGION_DIVISION, DIRECTION_DIFF
 from utils import SudokuGenerator, SudokuValidator, SudoKuLogger
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudokuWeb.settings')
 django.setup()
 
-from sudoKiller.models import SudokuKiller
+from killerMode.models import KillerSudoku
 
 def convert_sudo_to_str(sudoku : list) :
     return ''.join(str(sudoku[row][col]) for row in range(9) for col in range(9))
@@ -268,7 +268,7 @@ if __name__ == '__main__':
             puzzle_json.append(record)
 
         # 存入数据库
-        sudoku = SudokuKiller.objects.create(
+        sudoku = KillerSudoku.objects.create(
             puzzle=puzzle_json,
             solution=solution,
             difficulty=args.difficulty

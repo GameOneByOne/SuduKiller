@@ -1,5 +1,5 @@
 """
-URL configuration for sudoKillerWeb project.
+URL configuration for sudokuWeb project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -15,11 +15,16 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from . import views
+from django.urls import path, include
+import commonMode.urls
+import killerMode.urls
+import achievement.urls
+import puzzleMain.urls
 
 urlpatterns = [
-    path("<str:mark>", views.sudo_solve, name="SudoInfo"),
-    path("occur/", views.sudo_occur, name="SudoOccur"),
-    path("complete/", views.sudo_complete, name="SudoComplete"),
+    path("", include(puzzleMain.urls)),
+    path("admin/", admin.site.urls),
+    path("commonMode/", include(commonMode.urls)),
+    path("killerMode/", include(killerMode.urls)),
+    path("achievement/", include(achievement.urls)),
 ]

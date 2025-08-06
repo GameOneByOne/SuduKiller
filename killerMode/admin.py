@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Sudoku
+from .models import KillerSudoku
 
-@admin.register(Sudoku)
-class SudokuAdmin(admin.ModelAdmin):
+@admin.register(KillerSudoku)
+class KillerSudokuAdmin(admin.ModelAdmin):
     list_display = ('id', 'short_puzzle', 'difficulty', 'created_at')
     list_filter = ['difficulty']
-    search_fields = ('puzzle', 'solution')
+    search_fields = ['solution']
     readonly_fields = ('mark', 'created_at')
     
     def short_puzzle(self, obj):

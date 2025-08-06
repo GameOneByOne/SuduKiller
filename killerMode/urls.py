@@ -19,5 +19,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.achievement_main, name="Achievement"),
+    path("<str:mark>", views.sudo_solve, name="killerModeInfo"),
 ]

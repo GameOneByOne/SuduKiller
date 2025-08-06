@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("sudo", "0001_initial"),
+        ("commonMode", "0001_initial"),
     ]
 
     operations = [

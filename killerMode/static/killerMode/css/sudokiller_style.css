@@ -1,0 +1,199 @@
+body {
+    background-image: url('https://www.transparenttextures.com/patterns/white-diamond.png'); /* 设置纹理背景图案 */
+    background-color: #f9f9f9; /* 设置背景颜色 */
+    background-repeat: repeat; /* 让纹理图案重复 */
+    background-size: auto; /* 保持原始大小 */
+}
+
+.main-container {
+    gap: 10px; /* 设置子元素之间的间距 */
+    height: 100%;
+    width: 100%;
+}
+
+.sudoku-info {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: center; /* 子元素中间对齐 */
+    gap: 10px; /* 子元素之间的间距 */
+    width: 100%; /* 确保父容器占满可用空间 */
+}
+
+.sudoku-game {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: center; /* 子元素中间对齐 */
+    gap: 10px; /* 设置子元素之间的间距 */
+    height: 100%;
+    width: 100%;
+}
+
+.small-label {
+    display: inline-block;
+    font-size: 12px;
+    white-space: nowrap;
+    font-weight: bold; /* 加粗 */
+    color: white; /* 字体颜色 */
+    background-color: #007bff; /* 背景颜色 */
+    padding: 3px 8px; /* 内边距 */
+    border-radius: 5px; /* 圆角 */
+    vertical-align: middle; /* 垂直对齐 */
+    cursor: default; /* 鼠标样式保持默认 */
+}
+
+.small-label:nth-child(2n + 1) {
+    background-color: #28a745; /* 背景颜色 */
+    /* margin-left: 10px; */
+}
+
+.action-button {
+    background-color: #007bff; /* 按钮背景颜色 */
+    color: white; /* 按钮文字颜色 */
+    border: none; /* 去掉边框 */
+    padding: 5px 10px; /* 减小内边距 */
+    font-size: 12px; /* 减小字体大小 */
+    font-weight: bold; /* 加粗文字 */
+    border-radius: 3px; /* 减小圆角 */
+    transition: background-color 0.3s ease; /* 添加背景色过渡效果 */
+    min-width: 60px; /* 设置按钮的最小宽度 */
+}
+
+#sudoku-hint {
+    display:flex;
+    flex-wrap: wrap;
+    color: #333; /* 设置文字颜色 */
+    padding: 1px; /* 添加内边距 */
+    background-color: #f9f9f9; /* 设置背景颜色 */
+    justify-content: center;
+    border: 1px solid #ccc; /* 添加边框 */
+    border-radius: 8px; /* 添加圆角 */
+    width: 200px; /* 设置固定宽度 */
+    height: 500px; /* 设置固定高度 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    margin-left: 20px; /* 与其他元素保持间距 */
+}
+
+#sudoku-hint-container {
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-flow: row wrap;
+    justify-content: left; /* 子元素水平居中 */
+    margin-top: 20px;
+    border-radius: 8px;
+    border-width: 2px;
+    height:30%;
+    gap: 5px;
+    width: 80%; /* 确保容器占满可用空间 */
+}
+
+.hint-box {
+    margin : 0;
+    margin: 2.5%;
+    width: 25%; /* 盒子宽度 */
+    height: 25%; /* 盒子高度 */
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    background-color: #007bff; /* 盒子背景色 */
+    color: white; /* 文字颜色 */
+    font-size: 16px; /* 字体大小 */
+    font-weight: bold; /* 加粗 */
+    border-radius: 30%; /* 圆形盒子 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    cursor: default;
+}
+
+.hint-box:hover {
+    background-color: #74b5fb; /* 盒子背景色 */
+}
+
+.hidden {
+    visibility: hidden; /* 隐藏元素，但保留布局 */
+    opacity: 0; /* 可选：将透明度设置为 0，增强隐藏效果 */
+}
+
+.action-button:hover {
+    background-color: #0056b3; /* 鼠标悬停时的背景颜色 */
+}
+
+.action-button:active {
+    background-color: #003f7f; /* 按下时的背景颜色 */
+}
+
+.sudoku-button {
+    display: flex; /* 使用 Flexbox 布局 */
+    justify-content: flex-end; /* 子元素靠右对齐 */
+    gap: 10px; /* 按钮之间的间距 */
+    margin-top: 2px; /* 与其他内容的间距 */
+    width: 69%
+}
+
+#myCanvas {
+    border: 1px solid #c91b1b;
+}
+
+#sudoku {
+    max-width: 450px;
+    width: 50%;
+    max-height: 450px;
+    border-collapse: collapse;
+    margin: 10px 10px;
+    border: 6px solid #444;
+}
+
+#sudoku td {
+    width: 18px;
+    height: 18px;
+    border: 2px dashed #aaa;
+    text-align: center;
+    font-size: 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+#sudoku tr:nth-child(3n) td {
+    border-bottom: 4px solid #666;
+}
+
+#sudoku td:nth-child(3n) {
+    border-right: 4px solid #666;
+}
+
+#sudoku td:hover {
+    background-color: #f5a9a9 !important;
+    z-index: 1;
+}
+
+.selected {
+    background-color: #d88888 !important;
+    box-shadow: 0 0 10px rgba(243, 237, 183, 0.7);
+}
+
+.row-highlight {
+    background-color: #fcf5ba !important;
+}
+
+.col-highlight {
+    background-color: #fcf5ba !important;
+}
+
+.row-highlight.col-highlight {
+    background-color: #fcf5ba !important;
+}
+
+/* 预填数字样式 */
+#sudoku td.fixed {
+    font-weight: bold;
+    color: #333;
+    background-color: #e8e8e8;
+}
+
+/* 用户输入数字样式 */
+#sudoku td.user-input {
+    color: #2196f3;
+    font-weight: bold;
+}
+
+/* 冲突数字样式 */
+#sudoku td.conflict {
+    color: #f44336 !important;
+    font-weight: bold;
+    background-color: #ffebee !important;
+}
