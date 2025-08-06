@@ -6,7 +6,7 @@ import django
 import argparse
 from copy import deepcopy
 from utils_define import EMPTY_CELLS
-from utils import SudokuGenerator, SudokuValidator
+from utils import SudokuGenerator, SudokuValidator, SudoKuLogger
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'sudoKillerWeb.settings')
@@ -35,16 +35,18 @@ def calc_try_solve_list(sudo_result : list, try_solve_list : list) :
                 can_fill_nums.append(num)
         try_solve_list[index].append(can_fill_nums)
     try_solve_list.sort(key=lambda x : len(x[2]))
+    
+    current_solve_num = 1
+    for item in try_solve_list[::-1] :
+        item.append(current_solve_num)
+        current_solve_num *= len(item[2])
     return
 
 def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : dict, index : int = 0) :
-    print("Total Process {} | Solution {} | Remained Time {}".format(
-        process_info['max_process'],
-        process_info['solution_num'],
-        process_info["timeout"] - int(time.time() - process_info["start_time"])), end='\r')
-
     if index >= len(try_solve_list) :
         process_info["solution_num"] += 1
+        process_info["current_process"] += 1
+        SudoKuLogger.show_process(process_info)
         return
     
     # 如果已经有多个解了，就不再继续计算了
@@ -57,8 +59,12 @@ def calc_all_solution(sudo_result : list, try_solve_list : list, process_info : 
         return
 
     for num in try_solve_list[index][2] :
+        SudoKuLogger.show_process(process_info)
         if not SudokuValidator.valid(sudo_result, try_solve_list[index][0], try_solve_list[index][1], num) :
+            process_info["current_process"] += try_solve_list[index][3]
+            SudoKuLogger.show_process(process_info)
             continue
+
         sudo_result[try_solve_list[index][0]][try_solve_list[index][1]] = num
         calc_all_solution(sudo_result, try_solve_list, process_info, index + 1)
         sudo_result[try_solve_list[index][0]][try_solve_list[index][1]] = 0
@@ -83,14 +89,17 @@ def generate_sudoku(difficulty):
         # 初始化处理过程结构体
         process_info = dict()
         process_info["max_process"] = 1
+        process_info["current_process"] = 0
         process_info["solution_num"] = 0
         process_info["start_time"] = time.time()
         process_info["timeout"] = 120
+        process_info["status"] = "processing"
         for index in range(len(try_solve_list)) :
             process_info["max_process"] *= len(try_solve_list[index][2])
         
         # 计算所有可能的解
         calc_all_solution(try_solve_result, try_solve_list, process_info)
+        SudoKuLogger.show_process(process_info)
         if (process_info["solution_num"] == 1):
             break
 
