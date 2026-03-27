@@ -295,11 +295,17 @@ select {
 .cell-button.fixed {
   background: var(--fixed);
   font-weight: 700;
+  color: rgba(47, 36, 29, 0.96);
   cursor: default;
 }
 
+.cell-button.entered {
+  color: var(--success);
+  font-weight: 600;
+}
+
 .cell-button.selected {
-  background: var(--selected);
+  background: rgba(246, 200, 132, 0.7);
 }
 
 .cell-button.same-value {
@@ -307,7 +313,7 @@ select {
 }
 
 .cell-button.related {
-  background: var(--highlight);
+  background: rgba(248, 234, 209, 0.35);
 }
 
 .cell-button.conflict {
