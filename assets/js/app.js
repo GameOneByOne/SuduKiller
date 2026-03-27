@@ -229,6 +229,8 @@
 
         if (state.fixed[row][col]) {
           button.classList.add("fixed");
+        } else if (value !== 0) {
+          button.classList.add("entered");
         }
 
         if (state.selected && state.selected.row === row && state.selected.col === col) {
