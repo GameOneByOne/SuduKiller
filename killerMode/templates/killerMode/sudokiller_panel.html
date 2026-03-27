@@ -1,0 +1,23 @@
+{% for data in sudoku_datas %}
+<div class="puzzle-panel">
+    <a href="{% url 'SudoInfo' data.mark %}" class="puzzle-mask"></a>
+    <div class="puzzle-panel-info">
+        <span class="small-label">难度 :</span>
+        <span class="small-label">{{ data.difficulty }}</span>
+        <span class="small-label">尝试次数 :</span>
+        <span class="small-label">{{ data.try_nums }}</span>
+        <span class="small-label">成功次数 :</span>
+        <span class="small-label">{{ data.sloved_nums }}</span>
+    </div>
+    <div class="vertical-line"></div>
+    <table class="sudoku" data-mark="{{ mark }}">
+        {% for row in data.content %}
+        <tr>
+            {% for cell in row %}
+            <td>{% if cell != "0" %}{{ cell }}{% endif %}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{%endfor %}

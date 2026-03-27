@@ -1,0 +1,26 @@
+.sudoku {
+    width: 55%;
+    max-width: 300px;
+    max-height:300px;
+    border-collapse: collapse;
+    margin: 2% 2%;
+    border: 5px solid #282828;
+}
+
+.sudoku td {
+    width: 10%;
+    height: 10%;
+    border: 2px dashed #aaa;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+}
+
+.sudoku tr:nth-child(3n) td {
+    border-bottom: 3px solid #666;
+}
+
+.sudoku td:nth-child(3n) {
+    border-right: 3px solid #666;
+}

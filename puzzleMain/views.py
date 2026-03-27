@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils import timezone
-from sudo.models import Sudoku
+from commonMode.models import CommonSudoku
 from achievement.models import Achievement
 
 
@@ -16,7 +16,7 @@ def puzzle_main(request):
     context["difficulty_map"] = difficulty_map
     formatted_time = timezone.now().strftime("%Y-%m-%d")
     # 获取题目数据
-    sudoku_datas = list(Sudoku.objects.filter(created_at=formatted_time))
+    sudoku_datas = list(CommonSudoku.objects.filter(created_at=formatted_time))
     context["sudoku_datas"] = list()
     for data in sudoku_datas :
         context["sudoku_datas"].append({
@@ -27,7 +27,7 @@ def puzzle_main(request):
             "content": data.get_grid(),
         })
 
-    sudo_content = render_to_string('sudo/sudo_panel.html', context)
+    sudo_content = render_to_string('commonMode/sudo_panel.html', context)
     # 传递给当前模板
     return render(request, "puzzleMain/main.html", {'panel_content': sudo_content})
 

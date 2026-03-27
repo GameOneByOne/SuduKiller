@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'killerMode/css/killerMode_style.css' %}">
+
+    <title>Hello, Sudoku!</title>
+    <style></style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="sudoku-info">
+            <span class="small-label">难度 :</span>
+            <span class="small-label">{{ difficulty }}</span>
+            <span class="small-label">尝试次数 :</span>
+            <span class="small-label">{{ try_nums }}</span>
+            <span class="small-label">成功次数 :</span>
+            <span class="small-label">{{ sloved_nums }}</span>
+        </div>
+        <div class="sudoku-game">
+            <table id="sudoku" data-mark="{{ mark }}" data-regions='{{ regions }}'>
+                {% for row in nums %}
+                <tr>
+                    {% for cell in row %}
+                    <td cell-index="{{ cell.cell_index }}">{% if cell.value != "0" %}{{ cell.value }}{% endif %}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            <canvas id="myCanvas" width="442" height="442" style="z-index:100; width:442px; height:442px;"></canvas>
+            <div id="sudoku-hint">
+                <div id="sudoku-hint-container"></div>
+            </div>
+        </div>
+        <div class="sudoku-button">
+            <button class="action-button" onclick="resetGame(this)">重置游戏</button>
+            <button class="action-button" onclick="showHint(this)">开启提示</button>
+        </div>
+    </div>
+    <script>
+        function draw_one_cell(rect, current_cell_position, current_cell_value, all_cell_positions) {
+            console.log("....  ", current_cell_position, current_cell_value, all_cell_positions);
+            var c = document.getElementById("myCanvas");
+            var cxt = c.getContext("2d");
+            cxt.strokeStyle = 'black';
+            cxt.setLineDash([10, 2]);
+
+            // 如果左边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] - 1])) {
+                var cellSize = rect.width / 9 - 1; // 根据表格尺寸计算每个单元格的大小
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * cellSize + 1, current_cell_position[1] * cellSize + 1);
+                cxt.lineTo(current_cell_position[0] * cellSize + 1, (current_cell_position[1] + 1) * cellSize - 1);
+                cxt.stroke();
+            }
+
+            // 如果右边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] + 1])) {
+                var cellSize = rect.width / 9 - 1;
+                cxt.beginPath();
+                cxt.moveTo((current_cell_position[0] + 1) * cellSize - 3, current_cell_position[1] * cellSize + 3);
+                cxt.lineTo((current_cell_position[0] + 1) * cellSize - 3, (current_cell_position[1] + 1) * cellSize - 3);
+                cxt.stroke();
+            }
+
+            // 如果上边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] - 1])) {
+                var cellSize = rect.width / 9 - 1;
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * cellSize + 1, current_cell_position[1] * cellSize + 1);
+                cxt.lineTo((current_cell_position[0] + 1) * cellSize - 1, current_cell_position[1] * cellSize + 1);
+                cxt.stroke();
+            }
+
+            // 如果下边没有本区块的格子，则画线
+            if (!all_cell_positions.includes([current_cell_position[0], current_cell_position[1] + 1])) {
+                var cellSize = rect.width / 9 - 1;
+                cxt.beginPath();
+                cxt.moveTo(current_cell_position[0] * cellSize + 1, (current_cell_position[1] + 1) * cellSize - 1);
+                cxt.lineTo((current_cell_position[0] + 1) * cellSize - 1, (current_cell_position[1] + 1) * cellSize - 1);
+                cxt.stroke();
+            }
+
+
+            // 检查一下是不是最左上角的格子，是的话填充数字
+            
+
+        }
+        var regions = {{ regions|safe }};
+        window.addEventListener('resize', function() {
+            var element = document.getElementById('sudoku');
+            var rect = element.getBoundingClientRect();
+            console.log('Top: ' + rect.top);
+            console.log('Right: ' + rect.right);
+            console.log('Bottom: ' + rect.bottom);
+            console.log('Left: ' + rect.left);
+            console.log('Width: ' + rect.width);
+            console.log('Height: ' + rect.height);
+
+            var canvasElement = document.getElementById('myCanvas');
+            canvasElement.style.position = 'absolute';
+            canvasElement.style.top = `${rect.top + 4}px`;
+            canvasElement.style.left = `${rect.left + 4}px`;
+            
+            // 清除画布
+            var ctx = canvasElement.getContext('2d');
+            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            for (let i = 0; i < regions.length; i++) {
+                for (let j = 0; j < regions[i]["regions"].length; j++) {
+                    draw_one_cell(rect, regions[i]["regions"][j], regions[i]["sum"], regions[i]["regions"]);
+                    break;
+                }
+                break;
+            }
+        });
+    </script>
+    <script src="{% static 'sudo/js/sudo_utils.js' %}"></script>
+    <script src="{% static 'sudo/js/sudo_data_archive.js' %}"></script>
+    <script src="{% static 'sudo/js/sudo_backen_api.js' %}"></script>
+    <script src="{% static 'sudo/js/sudo_button_func.js' %}"></script>
+    <script src="{% static 'sudo/js/sudo_game_logic.js' %}"></script>
+</body>
+
+</html>

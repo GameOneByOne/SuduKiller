@@ -19,5 +19,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.achievement_main, name="Achievement"),
+    path("<str:mark>", views.sudo_solve, name="SudoInfo"),
+    path("occur/", views.sudo_occur, name="SudoOccur"),
+    path("complete/", views.sudo_complete, name="SudoComplete"),
 ]
