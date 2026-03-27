@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sudoku Lab</title>
+  <meta name="description" content="支持普通数独与杀手数独的纯前端静态站点，可直接部署到 GitHub Pages。">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <h1 class="pixel-title" aria-label="数独">
+        <span class="pixel-title-mark">数</span>
+        <span class="pixel-title-mark accent">独</span>
+      </h1>
+    </header>
+
+    <main class="layout">
+      <section class="panel board-panel">
+        <div class="board-toolbar">
+          <div class="toolbar-pill subtle" id="storageBadge">日期 --</div>
+          <div class="toolbar-pill subtle" id="timerPill">耗时 00:00</div>
+        </div>
+        <div id="boardWrap" class="board-wrap">
+          <div id="boardLoading" class="board-loading">正在生成今日数独...</div>
+          <div id="boardRoot" class="board-root" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="panel keypad-panel">
+        <h2>数字键盘</h2>
+        <div id="keypad" class="keypad"></div>
+        <button id="clearCellButton" class="ghost-button full-width">清空当前格子</button>
+        <div id="notesPanel" class="notes-panel">
+          <div class="notes-panel-header">
+            <span>候选数</span>
+            <strong id="notesCellLabel">未选中</strong>
+          </div>
+          <div id="notesPanelGrid" class="notes-panel-grid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
