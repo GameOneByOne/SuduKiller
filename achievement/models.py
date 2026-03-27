@@ -17,3 +17,19 @@ class Achievement(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SudokuCompletionRecord(models.Model):
+    puzzle_id = models.CharField(max_length=80, verbose_name="题目编号")
+    ip_address = models.CharField(max_length=64, verbose_name="IP 地址")
+    region = models.CharField(max_length=120, default="未知地区", verbose_name="地域")
+    elapsed_seconds = models.PositiveIntegerField(verbose_name="用时秒数")
+    completed_at = models.DateTimeField(auto_now_add=True, verbose_name="通关时间")
+
+    class Meta:
+        ordering = ["-completed_at"]
+        verbose_name = "数独通关记录"
+        verbose_name_plural = "数独通关记录"
+
+    def __str__(self):
+        return f"{self.ip_address} - {self.elapsed_seconds}s"

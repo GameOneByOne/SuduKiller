@@ -20,4 +20,5 @@ from . import views
 
 urlpatterns = [
     path("", views.achievement_main, name="Achievement"),
+    path("api/completions/", views.completion_records_api, name="CompletionRecordsApi"),
 ]
