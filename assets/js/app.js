@@ -16,12 +16,15 @@
     solution: null,
     board: emptyGrid(0),
     fixed: emptyGrid(false),
+    manualEntries: emptyGrid(null),
     initialCandidates: emptyGrid(null),
     candidateStates: emptyGrid(null),
     selected: null,
     showNotes: true,
     elapsed: 0,
     timerStarted: false,
+    completionHandled: false,
+    completionRecords: [],
     timerId: null
   };
 
@@ -34,7 +37,13 @@
     keypad: document.getElementById("keypad"),
     notesPanel: document.getElementById("notesPanel"),
     notesCellLabel: document.getElementById("notesCellLabel"),
-    notesPanelGrid: document.getElementById("notesPanelGrid")
+    notesPanelGrid: document.getElementById("notesPanelGrid"),
+    recordsPanelStatus: document.getElementById("recordsPanelStatus"),
+    recordsPanelList: document.getElementById("recordsPanelList"),
+    completionModal: document.getElementById("completionModal"),
+    completionMessage: document.getElementById("completionMessage"),
+    completionConfetti: document.getElementById("completionConfetti"),
+    completionCloseButton: document.getElementById("completionCloseButton")
   };
 
   init();
@@ -42,11 +51,22 @@
   function init() {
     renderKeypad();
     bindEvents();
+    loadCompletionRecords();
     generateDailyPuzzle();
   }
 
   function bindEvents() {
     elements.clearCellButton.addEventListener("click", () => applyValue(0));
+    if (elements.completionCloseButton) {
+      elements.completionCloseButton.addEventListener("click", hideCompletionModal);
+    }
+    if (elements.completionModal) {
+      elements.completionModal.addEventListener("click", (event) => {
+        if (event.target === elements.completionModal || event.target.classList.contains("completion-modal-backdrop")) {
+          hideCompletionModal();
+        }
+      });
+    }
 
     document.addEventListener("keydown", handleKeyboardInput);
     document.addEventListener("click", handleDocumentClick);
@@ -89,11 +109,13 @@
       state.solution = cloneGrid(generated.solution);
       state.board = cloneGrid(generated.puzzle);
       state.fixed = generated.fixed.map((row) => row.slice());
+      state.manualEntries = emptyGrid(null);
       state.initialCandidates = buildInitialCandidates(state.puzzle, state.fixed);
       state.candidateStates = buildCandidateStates(state.initialCandidates);
       state.selected = null;
       state.elapsed = 0;
       state.timerStarted = false;
+      state.completionHandled = false;
 
       elements.storageBadge.textContent = `日期 ${state.seed}`;
       elements.boardLoading.style.display = "none";
@@ -170,7 +192,17 @@
       return;
     }
 
-    state.board[row][col] = value;
+    if (value === 0) {
+      state.board[row][col] = 0;
+      state.manualEntries[row][col] = [];
+    } else {
+      const nextEntries = toggleManualEntry(row, col, value);
+      if (nextEntries.length === 1) {
+        state.board[row][col] = nextEntries[0];
+      } else {
+        state.board[row][col] = 0;
+      }
+    }
 
     syncStats();
     renderBoard();
@@ -194,6 +226,7 @@
     elements.boardRoot.classList.remove("pulse");
     void elements.boardRoot.offsetWidth;
     elements.boardRoot.classList.add("pulse");
+    handlePuzzleCompleted();
   }
 
   function render() {
@@ -223,9 +256,7 @@
         button.className = "cell-button";
 
         const value = state.board[row][col];
-        if (value !== 0) {
-          button.textContent = String(value);
-        }
+        renderCellContent(button, row, col, value);
 
         if (state.fixed[row][col]) {
           button.classList.add("fixed");
@@ -266,6 +297,39 @@
     state.selected = { row, col };
     renderBoard();
     renderNotesPanel();
+  }
+
+  function renderCellContent(button, row, col, value) {
+    button.innerHTML = "";
+
+    const manualEntries = getManualEntries(row, col);
+
+    if (manualEntries.length > 1) {
+      const notes = document.createElement("div");
+      notes.className = "cell-notes";
+
+      for (let digit = 1; digit <= 9; digit += 1) {
+        const note = document.createElement("span");
+        note.className = "cell-note-mini";
+        note.textContent = manualEntries.includes(digit) ? String(digit) : "";
+        notes.appendChild(note);
+      }
+
+      button.appendChild(notes);
+      return;
+    }
+
+    if (value !== 0) {
+      button.textContent = String(value);
+      return;
+    }
+
+    if (manualEntries.length === 1) {
+      const single = document.createElement("span");
+      single.className = "cell-note-single";
+      single.textContent = String(manualEntries[0]);
+      button.appendChild(single);
+    }
   }
 
   function clearSelection() {
@@ -575,7 +639,22 @@
       return;
     }
     candidateState[digit] = !candidateState[digit];
+    renderBoard();
     renderNotesPanel();
+  }
+
+  function toggleManualEntry(row, col, digit) {
+    const currentEntries = getManualEntries(row, col);
+    const nextEntries = currentEntries.includes(digit)
+      ? currentEntries.filter((item) => item !== digit)
+      : currentEntries.concat(digit).sort((left, right) => left - right);
+    state.manualEntries[row][col] = nextEntries;
+    return nextEntries;
+  }
+
+  function getManualEntries(row, col) {
+    const entries = state.manualEntries[row][col];
+    return Array.isArray(entries) ? entries : [];
   }
 
   function hasConflictAt(row, col) {
@@ -615,5 +694,212 @@
     if (cellSize > 0) {
       document.documentElement.style.setProperty("--cell-size", `${cellSize}px`);
     }
+  }
+
+  async function loadCompletionRecords() {
+    setRecordsStatus("加载中...");
+    try {
+      const records = await fetchCompletionRecords();
+      state.completionRecords = records;
+      renderCompletionRecords();
+      setRecordsStatus(records.length ? `最近 ${records.length} 条` : "暂无通关");
+    } catch (error) {
+      state.completionRecords = getLocalCompletionRecords();
+      renderCompletionRecords();
+      setRecordsStatus("本地记录");
+    }
+  }
+
+  async function fetchCompletionRecords() {
+    const response = await fetch("/achievement/api/completions/", {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      }
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch completion records");
+    }
+    const data = await response.json();
+    return Array.isArray(data.records) ? data.records : [];
+  }
+
+  async function handlePuzzleCompleted() {
+    if (state.completionHandled) {
+      return;
+    }
+    state.completionHandled = true;
+    showCompletionModal();
+
+    const payload = {
+      puzzle_id: state.puzzleId,
+      elapsed_seconds: state.elapsed,
+      region: getRegionLabel()
+    };
+
+    try {
+      const record = await createCompletionRecord(payload);
+      state.completionRecords = [record, ...state.completionRecords].slice(0, 12);
+      setRecordsStatus(`最近 ${state.completionRecords.length} 条`);
+    } catch (error) {
+      const record = createLocalCompletionRecord(payload);
+      const localRecords = [record, ...getLocalCompletionRecords()].slice(0, 12);
+      saveLocalCompletionRecords(localRecords);
+      state.completionRecords = localRecords;
+      setRecordsStatus("本地记录");
+    }
+
+    renderCompletionRecords();
+  }
+
+  async function createCompletionRecord(payload) {
+    const response = await fetch("/achievement/api/completions/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      throw new Error("Failed to create completion record");
+    }
+    const data = await response.json();
+    return data.record;
+  }
+
+  function renderCompletionRecords() {
+    if (!elements.recordsPanelList) {
+      return;
+    }
+
+    elements.recordsPanelList.innerHTML = "";
+
+    if (!state.completionRecords.length) {
+      const empty = document.createElement("div");
+      empty.className = "record-empty";
+      empty.textContent = "还没有通关记录，等你成为第一位。";
+      elements.recordsPanelList.appendChild(empty);
+      return;
+    }
+
+    state.completionRecords.forEach((record) => {
+      const card = document.createElement("article");
+      card.className = "record-card";
+
+      const header = document.createElement("div");
+      header.className = "record-card-header";
+
+      const ip = document.createElement("div");
+      ip.className = "record-ip";
+      ip.textContent = record.ip || "本地访客";
+
+      const elapsed = document.createElement("div");
+      elapsed.className = "record-time";
+      elapsed.textContent = formatElapsed(record.elapsed_seconds || 0);
+
+      const region = document.createElement("div");
+      region.className = "record-region";
+      region.textContent = record.region || "未知地区";
+
+      const date = document.createElement("div");
+      date.className = "record-date";
+      date.textContent = formatCompletionDate(record.completed_at);
+
+      header.appendChild(ip);
+      header.appendChild(elapsed);
+      card.appendChild(header);
+      card.appendChild(region);
+      card.appendChild(date);
+      elements.recordsPanelList.appendChild(card);
+    });
+  }
+
+  function showCompletionModal() {
+    if (!elements.completionModal || !elements.completionMessage) {
+      return;
+    }
+    elements.completionMessage.textContent = `你完成了今日数独，用时 ${formatElapsed(state.elapsed)}。`;
+    elements.completionModal.classList.add("visible");
+    elements.completionModal.setAttribute("aria-hidden", "false");
+    launchConfetti();
+    window.setTimeout(hideCompletionModal, 2600);
+  }
+
+  function hideCompletionModal() {
+    if (!elements.completionModal) {
+      return;
+    }
+    elements.completionModal.classList.remove("visible");
+    elements.completionModal.setAttribute("aria-hidden", "true");
+  }
+
+  function launchConfetti() {
+    if (!elements.completionConfetti) {
+      return;
+    }
+    elements.completionConfetti.innerHTML = "";
+    const colors = ["#c66b3d", "#2f7d5b", "#f6c884", "#8f3d15"];
+    for (let index = 0; index < 20; index += 1) {
+      const piece = document.createElement("span");
+      piece.className = "completion-confetti-piece";
+      piece.style.left = `${5 + index * 4.4}%`;
+      piece.style.background = colors[index % colors.length];
+      piece.style.setProperty("--drift", `${(index % 2 === 0 ? 1 : -1) * (12 + index * 2)}px`);
+      piece.style.setProperty("--spin", `${index % 2 === 0 ? 240 : -240}deg`);
+      piece.style.animationDelay = `${index * 0.03}s`;
+      elements.completionConfetti.appendChild(piece);
+    }
+  }
+
+  function setRecordsStatus(text) {
+    if (elements.recordsPanelStatus) {
+      elements.recordsPanelStatus.textContent = text;
+    }
+  }
+
+  function getLocalCompletionRecords() {
+    try {
+      const stored = JSON.parse(window.localStorage.getItem("sudoku-completion-records") || "[]");
+      return Array.isArray(stored) ? stored : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveLocalCompletionRecords(records) {
+    window.localStorage.setItem("sudoku-completion-records", JSON.stringify(records));
+  }
+
+  function createLocalCompletionRecord(payload) {
+    return {
+      ip: "本地访客",
+      region: payload.region,
+      elapsed_seconds: payload.elapsed_seconds,
+      completed_at: new Date().toISOString(),
+      puzzle_id: payload.puzzle_id
+    };
+  }
+
+  function getRegionLabel() {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "未知时区";
+    const language = navigator.language || "未知语言";
+    return `${language} · ${timezone}`;
+  }
+
+  function formatCompletionDate(value) {
+    if (!value) {
+      return "刚刚通关";
+    }
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return "刚刚通关";
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 }());
